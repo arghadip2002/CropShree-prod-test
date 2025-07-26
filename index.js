@@ -11,7 +11,8 @@ import { fileURLToPath } from "url";
 import env from "dotenv";
 
 const app = express();
-const port = 3000;
+// const port = 3000;
+const port = process.env.PORT || 3000;
 env.config();
 
 app.use(
@@ -393,6 +394,8 @@ passport.deserializeUser((user, cb) => {
   cb(null, user);
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Server running on port ${port}`);
+// });
+
+app.listen(port, "0.0.0.0");

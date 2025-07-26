@@ -194,7 +194,8 @@ app.get("/generateQR", (req, res) => {
     const batch = req.query.batch;
     console.log(batch);
 
-    const productURL = `http://localhost:3000/verify/?batch=${batch}`;
+    const domain = process.env.DOMAIN;
+    const productURL = `${domain}/verify/?batch=${batch}`;
 
     qrcode.toFile(
       `qrImages/${batch}_qr.png`,
@@ -305,7 +306,8 @@ app.post("/submit_product", async (req, res) => {
       [batch, gtin, mDate, eDate, productName]
     );
 
-    const productURL = `http://localhost:3000/verify/?batch=${batch}`;
+    const domain = process.env.DOMAIN;
+    const productURL = `${domain}/verify/?batch=${batch}`;
     // Generate QR code and save as PNG file
     // const fs = await import("fs");
     qrcode.toFile(

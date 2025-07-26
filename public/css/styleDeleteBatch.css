@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(to right, #e0ffe0, #f3fff3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.delete-container {
+  background: white;
+  padding: 3rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 20px rgba(47, 135, 50, 0.2);
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.8rem;
+  color: #2f8732;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #2f8732;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #cdeacd;
+  border-radius: 0.5rem;
+  background: #f8fff8;
+  transition: border-color 0.2s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #76c377;
+  outline: none;
+}
+
+.btn-delete {
+  background-color: #dc2626;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.btn-delete:hover {
+  background-color: #b91c1c;
+}
+
+.btn-cancel {
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: #2f8732;
+  text-decoration: underline;
+  font-weight: 500;
+}

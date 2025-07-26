@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/headeradmin') %>
+    <!-- <link rel="stylesheet" href="/css/admin.css" /> -->
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-buttons">
+        <a href="/view_database">Product Database</a>
+        <a href="/customerdatabase">Customer Database</a>
+
+        <a href="/logoutSure">Logout</a>
+      </div>
+    </nav>
+
+    <!-- Product Registration Form -->
+    <div class="form-container">
+      <h2>Product Registration</h2>
+      <form action="/submit_product" method="POST">
+        <div class="form-group">
+          <label for="gtin">GTIN*</label>
+          <input type="text" id="gtin" name="gtin" required />
+        </div>
+
+        <div class="form-group">
+          <label for="productName">Product Name*</label>
+          <input type="text" id="productName" name="productName" required />
+        </div>
+
+        <div class="form-group">
+          <label for="brandName">Brand Name</label>
+          <input
+            type="text"
+            id="brandName"
+            name="brandName"
+            value="CropShield"
+            readonly
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="marketedBy">Marketed By</label>
+          <input
+            type="text"
+            id="marketedBy"
+            name="marketedBy"
+            value="CropShree LifeSciences"
+            readonly
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="leaflet">Leaflet (PDF)</label>
+          <input type="file" id="leaflet" name="leaflet" accept=".pdf" />
+        </div>
+
+        <div class="form-group">
+          <label for="mfgDate">Manufacturing Date*</label>
+          <input type="date" id="mfgDate" name="mfgDate" required />
+        </div>
+
+        <div class="form-group">
+          <label for="expDate">Expiry Date*</label>
+          <input type="date" id="expDate" name="expDate" required />
+        </div>
+
+        <div class="form-group">
+          <label for="batchNumber">Batch Number*</label>
+          <input type="text" id="batchNumber" name="batchNumber" required />
+        </div>
+
+        <button type="submit" class="submit-btn">Submit</button>
+      </form>
+    </div>
+  </body>
+</html>

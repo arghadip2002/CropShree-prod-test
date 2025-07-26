@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Verify Product</title>
+    <link rel="stylesheet" href="/css/clientForm.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="form-container">
+      <h2>Verify to View Product</h2>
+      <form action="/submitCustomer" method="POST">
+        <input name="name" type="text" placeholder="Your Name" required />
+        <input name="phone" type="tel" placeholder="Phone Number" required />
+        <input type="hidden" name="location" id="location" />
+        <input type="hidden" name="batch" value="<%= batch %>" />
+        <button type="submit">Continue</button>
+      </form>
+    </div>
+
+    <script>
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+
+        try {
+          const response = await fetch(
+            `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&apiKey=0bcbc48e736f49c4bb447db959e69d96`
+          );
+          const data = await response.json();
+          const address = data.features[0].properties.formatted;
+          document.getElementById("location").value = address;
+        } catch (error) {
+          console.error("Error fetching location:", error);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database Panel</title>
+
+    <link rel="stylesheet" href="/css/styleViewDB.css" />
+    <title>Product Database | CropShree</title>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-buttons">
+        <a href="/logoutSure">Logout</a>
+        <a href="/customerdatabase">Customer Database</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h2>Registered Products</h2>
+
+      <div class="action-bar">
+        <a href="/adminpanel" class="registerBatch">Register Batch</a>
+        <a href="/delete_batch" class="deleteBatch">Delete Batch</a>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>GTIN</th>
+            <th>Batch Number</th>
+            <th>Manufacturing Date</th>
+            <th>Expiry Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (products.length === 0) { %>
+          <tr>
+            <td colspan="7" class="empty-row">No products found</td>
+          </tr>
+          <% } else { %> <% products.forEach((product) => { %>
+          <tr>
+            <td><%= product.id %></td>
+            <td><%= product.product_name %></td>
+            <td><%= product.gtin %></td>
+            <td><%= product.batch %></td>
+            <td><%= product.mfg_date.toISOString().slice(0, 10) %></td>
+            <td><%= product.exp_date.toISOString().slice(0, 10) %></td>
+            <td>
+              <button
+                class="view"
+                onclick="location.href='/adminclientui?batch=<%= product.batch %>'"
+              >
+                View
+              </button>
+            </td>
+          </tr>
+          <% }); %> <% } %>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

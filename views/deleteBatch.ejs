@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/css/styleDeleteBatch.css" />
+
+    <title>Delete Batch | CropShree Admin</title>
+  </head>
+  <body>
+    <div class="delete-container">
+      <h2>Delete Product Batch</h2>
+      <form action="/delete_batch" method="POST">
+        <div class="form-group">
+          <label for="batchNumber">Enter Batch Number *</label>
+          <input
+            type="text"
+            id="batchNumber"
+            name="batchNumber"
+            required
+            placeholder="e.g. CROP-2025-001"
+          />
+        </div>
+        <button type="submit" class="btn-delete">Delete Batch</button>
+      </form>
+      <a href="/view_database" class="btn-cancel">Cancel</a>
+    </div>
+  </body>
+</html>

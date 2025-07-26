@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database Panel</title>
+
+    <link rel="stylesheet" href="/css/styleViewDB.css" />
+    <title>Customer Database | CropShree</title>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-buttons">
+        <a href="/logoutSure">Logout</a>
+        <a href="/view_database">Product Database</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h2>Registered Customers Scanned the QR</h2>
+
+      <!-- <div class="action-bar">
+        <a href="/adminpanel" class="registerBatch">Register Batch</a>
+        <a href="/delete_batch" class="deleteBatch">Delete Batch</a>
+      </div> -->
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Customer Name</th>
+            <th>Phone No</th>
+            <th>Location</th>
+            <th>Batch</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (customers.length === 0) { %>
+          <tr>
+            <td colspan="7" class="empty-row">No customers found</td>
+          </tr>
+          <% } else { %> <% customers.forEach((customer) => { %>
+          <tr>
+            <td><%= customer.customer_id %></td>
+            <td><%= customer.name %></td>
+            <td><%= customer.phone %></td>
+            <td><%= customer.location %></td>
+            <td><%= customer.batch %></td>
+          </tr>
+          <% }); %> <% } %>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

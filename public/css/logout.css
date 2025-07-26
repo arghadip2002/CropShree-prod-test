@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(to right, #d4f4d7, #efffed);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #1e293b;
+}
+
+.logout-container {
+  background: white;
+  padding: 2.5rem 3rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 20px rgba(47, 135, 50, 0.15);
+  text-align: center;
+  max-width: 500px;
+}
+
+.logout-container h2 {
+  font-size: 1.75rem;
+  color: #2f8732;
+  margin-bottom: 2rem;
+}
+
+.logout-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.btn {
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.confirm-btn {
+  background-color: #dc2626;
+  color: white;
+}
+
+.confirm-btn:hover {
+  background-color: #b91c1c;
+}
+
+.cancel-btn {
+  background-color: #409d45;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #2f8732;
+}

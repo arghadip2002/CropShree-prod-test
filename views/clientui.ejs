@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= product.product_name %> - Details</title>
+    <link rel="stylesheet" href="/css/clientui.css" />
+  </head>
+  <body>
+    <div class="product-card">
+      <h2>Product Information</h2>
+      <div class="table-wrapper">
+        <table>
+          <tbody>
+            <tr>
+              <th>Product Name</th>
+              <td><%= product.product_name %></td>
+            </tr>
+            <tr>
+              <th>Batch Code</th>
+              <td><%= product.batch %></td>
+            </tr>
+            <tr>
+              <th>GTIN</th>
+              <td><%= product.gtin %></td>
+            </tr>
+            <tr>
+              <th>Manufactured</th>
+              <td><%= product.mfg_date.toISOString().slice(0, 10) %></td>
+            </tr>
+            <tr>
+              <th>Expires</th>
+              <td><%= product.exp_date.toISOString().slice(0, 10) %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

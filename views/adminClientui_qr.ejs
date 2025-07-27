@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= product.product_name %> - Details</title>
+    <link rel="stylesheet" href="/css/clientui.css" />
+  </head>
+  <body>
+    <div class="container">
+      <a href="/qrdatabase" class="back-button">← Back to Database</a>
+
+      <div class="product-card">
+        <h2>Product Information</h2>
+        <div class="table-wrapper">
+          <table>
+            <tbody>
+              <tr>
+                <th>Product Name</th>
+                <td><%= product.product_name %></td>
+              </tr>
+              <tr>
+                <th>Batch Code</th>
+                <td><%= product.batch %></td>
+              </tr>
+              <tr>
+                <th>GTIN</th>
+                <td><%= product.gtin %></td>
+              </tr>
+              <tr>
+                <th>Manufactured</th>
+                <td><%= product.mfg_date.toISOString().slice(0, 10) %></td>
+              </tr>
+              <tr>
+                <th>Expires</th>
+                <td><%= product.exp_date.toISOString().slice(0, 10) %></td>
+              </tr>
+              <tr>
+                <th>Leaflet</th>
+                <td><a href="#" class="leaflet-link">View Leaflet</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="qr-section">
+        <div class="qr-container">
+          <img
+            src="/qrImages/<%= product.batch %>_qr.png"
+            alt="QR not in Server"
+            class="qr-image"
+          />
+        </div>
+        <div class="action-buttons">
+          <a
+            href="/deleteQR_qr?batch=<%= product.batch %>"
+            class="delete-button"
+          >
+            Delete QR
+          </a>
+
+          <a
+            href="/generateQR_qr?batch=<%= product.batch %>"
+            class="generate-button"
+          >
+            Generate QR
+          </a>
+
+          <a
+            href="/downloadQR?batch=<%= product.batch %>"
+            class="download-button"
+          >
+            Downlaod QR
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

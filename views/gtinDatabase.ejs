@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database Panel</title>
+
+    <link rel="stylesheet" href="/css/styleViewDB.css" />
+    <title>GTIN Database | CropShree</title>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-buttons">
+        <!-- <a href="/customerdatabase">Customer Database</a> -->
+        <a href="/dashboard">Dashboard</a>
+
+        <a href="/logoutSure">Logout</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h2>Registered Products</h2>
+
+      <div class="action-bar">
+        <a href="/gtinRegister" class="registerBatch">Register GTIN</a>
+        <a href="/delete_gtin" class="deleteBatch">Delete GTIN</a>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>GTIN</th>
+            <th>Product Name</th>
+            <th>Product Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (gtinReg.length === 0) { %>
+          <tr>
+            <td colspan="7" class="empty-row">No GTIN found</td>
+          </tr>
+          <% } else { %> <% gtinReg.forEach((gtin) => { %>
+          <tr>
+            <td><%= gtin.id %></td>
+            <td><%= gtin.gtin %></td>
+            <td><%= gtin.product_name %></td>
+            <td><%= gtin.product_type %></td>
+          </tr>
+          <% }); %> <% } %>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

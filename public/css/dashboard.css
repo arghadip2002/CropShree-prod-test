@@ -1,0 +1,115 @@
+/* Reset & Base Styles */
+body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  background-color: #f8fafc;
+  color: #1f2937;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.logout-link {
+  color: #ffffff;
+  background-color: #ef4444;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.logout-link:hover {
+  background-color: #dc2626;
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+  display: flex;
+  min-height: calc(100vh - 60px);
+}
+
+/* Sidebar: Minor Sections */
+.sidebar {
+  width: 260px;
+  background-color: #e7f5e8;
+  border-right: 1px solid #c8e3d1;
+  padding: 2rem 1.5rem;
+}
+
+.sidebar h2 {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: #166534;
+  font-weight: 600;
+}
+
+.sidebar-btn {
+  display: block;
+  background-color: #ffffff;
+  color: #166534;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+  border-left: 4px solid #22c55e;
+  border-radius: 8px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.1);
+  transition: all 0.3s ease;
+}
+
+.sidebar-btn:hover {
+  background-color: #f0fff4;
+  transform: translateX(4px);
+}
+
+/* Main Content: Major Sections */
+.main-content {
+  flex: 1;
+  padding: 2rem 3rem;
+  background-color: #f8fafc;
+}
+
+.main-content h1 {
+  font-size: 2rem;
+  color: #14532d;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Card Grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.card {
+  background-color: #ffffff;
+  padding: 2.5rem;
+  border-radius: 14px;
+  border: 2px solid #c8e3d1;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #14532d;
+  text-decoration: none;
+  box-shadow: 0 6px 12px rgba(34, 197, 94, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.04);
+  box-shadow: 0 10px 20px rgba(34, 197, 94, 0.15);
+  background-color: #f0fff4;
+}

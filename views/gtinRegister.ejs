@@ -9,7 +9,7 @@
     <nav class="navbar">
       <div class="navbar-brand">CropShree Admin</div>
       <div class="navbar-buttons">
-        <a href="/view_database">Product Database</a>
+        <a href="/gtinDatabase">GTIN Database</a>
         <!-- <a href="/customerdatabase">Customer Database</a> -->
         <a href="/dashboard">Dashboard</a>
         <a href="/logoutSure">Logout</a>
@@ -18,8 +18,8 @@
 
     <!-- Product Registration Form -->
     <div class="form-container">
-      <h2>Product Registration</h2>
-      <form action="/submit_product" method="POST">
+      <h2>GTIN Registration</h2>
+      <form action="/submit_gtin" method="POST">
         <div class="form-group">
           <label for="gtin">GTIN*</label>
           <input type="text" id="gtin" name="gtin" required />
@@ -30,7 +30,7 @@
           <input type="text" id="productName" name="productName" required />
         </div> -->
 
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="brandName">Brand Name</label>
           <input
             type="text"
@@ -39,9 +39,9 @@
             value="CropShield"
             readonly
           />
-        </div>
+        </div> -->
 
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="marketedBy">Marketed By</label>
           <input
             type="text"
@@ -50,26 +50,31 @@
             value="CropShree LifeSciences"
             readonly
           />
-        </div>
+        </div> -->
 
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="leaflet">Leaflet (PDF)</label>
           <input type="file" id="leaflet" name="leaflet" accept=".pdf" />
-        </div>
+        </div> -->
 
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="mfgDate">Manufacturing Date*</label>
           <input type="date" id="mfgDate" name="mfgDate" required />
         </div>
 
         <div class="form-group">
           <label for="expDate">Expiry Date*</label>
-          <input type="date" id="expDate" name="expDate" required />
+          <input type="date" id="expDate" name="expDate" required /> -->
         </div>
 
         <div class="form-group">
-          <label for="batchNumber">Batch Number*</label>
-          <input type="text" id="batchNumber" name="batchNumber" required />
+          <label for="batchNumber">Product Name*</label>
+          <input type="text" id="batchNumber" name="product_name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="batchNumber">Product Type*</label>
+          <input type="text" id="batchNumber" name="product_type" required />
         </div>
 
         <button type="submit" class="submit-btn">Submit</button>

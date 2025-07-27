@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/dashboard.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <a href="/logoutSure" class="logout-link">Logout</a>
+    </nav>
+
+    <div class="dashboard-container">
+      <!-- Sidebar: Minor Sections -->
+      <aside class="sidebar">
+        <h2>Quick Actions</h2>
+        <a href="/adminpanel" class="sidebar-btn">Add Batch</a>
+        <a href="/delete_batch_toDashboard" class="sidebar-btn">Delete Batch</a>
+        <a href="/gtinRegister" class="sidebar-btn">GTIN Registration</a>
+        <a href="/delete_gtin" class="sidebar-btn">GTIN Deletion</a>
+      </aside>
+
+      <!-- Main Panel: Major Sections -->
+      <main class="main-content">
+        <h1>Welcome Admin</h1>
+        <div class="card-grid">
+          <a href="/view_database" class="card">Product Dashboard</a>
+          <a href="/customerdatabase" class="card">Customer Database</a>
+          <a href="/gtinDatabase" class="card">GTIN Dashboard</a>
+          <a href="/qrdatabase" class="card">QR Dashboard</a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

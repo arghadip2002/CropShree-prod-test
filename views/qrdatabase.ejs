@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>QR Code Database</title>
+    <link rel="stylesheet" href="/css/styleQR.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-buttons">
+        <!-- <a href="/customerdatabase">Customer Database</a> -->
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logoutSure">Logout</a>
+      </div>
+    </nav>
+
+    <h2>QR Code Records</h2>
+
+    <form method="GET" action="/qrdatabase">
+      <input
+        type="text"
+        name="batch"
+        placeholder="Search by Batch No..."
+        value="<%= queryBatch || '' %>"
+      />
+      <button type="submit">Search</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Batch No</th>
+          <th>QR Image</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (qrData.length === 0) { %>
+        <tr>
+          <td colspan="3">No QR codes found for "<%= queryBatch %>".</td>
+        </tr>
+        <% } else { %> <% qrData.forEach(record => { %>
+        <tr>
+          <td><%= record.id %></td>
+          <td><%= record.batch %></td>
+          <td>
+            <img
+              src="<%= record.qrPath %>"
+              alt="QR for <%= record.batch %>"
+              width="100"
+            />
+          </td>
+          <td>
+            <button
+              class="btn-view"
+              onclick="location.href='/adminclientui_qr?batch=<%= record.batch %>'"
+            >
+              🔍 View QR
+            </button>
+          </td>
+        </tr>
+        <% }) %> <% } %>
+      </tbody>
+    </table>
+  </body>
+</html>

@@ -279,32 +279,32 @@ app.get("/adminclientui", async (req, res) => {
   }
 });
 
-// app.get("/adminclientui_qr", async (req, res) => {
-//   const batch = req.query.batch;
-//   if (!batch) return res.status(400).send("Missing batch parameter.");
+app.get("/adminclientui_qr", async (req, res) => {
+  const batch = req.query.batch;
+  if (!batch) return res.status(400).send("Missing batch parameter.");
 
-//   try {
-//     const result = await db.query(
-//       `
-//         SELECT p.*, g.product_name, product_type
-//         FROM products p
-//         LEFT JOIN gtin_registration g ON p.gtin = g.gtin
-//         WHERE p.batch = $1
-//       `,
-//       [batch]
-//     );
+  try {
+    const result = await db.query(
+      `
+        SELECT p.*, g.product_name, product_type
+        FROM products p
+        LEFT JOIN gtin_registration g ON p.gtin = g.gtin
+        WHERE p.batch = $1
+      `,
+      [batch]
+    );
 
-//     if (result.rows.length === 0) {
-//       return res.status(404).send("Product not found.");
-//     }
+    if (result.rows.length === 0) {
+      return res.status(404).send("Product not found.");
+    }
 
-//     const product = result.rows[0];
-//     res.render("adminClientui_qr.ejs", { product: product });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Server error.");
-//   }
-// });
+    const product = result.rows[0];
+    res.render("adminClientui_qr.ejs", { product: product });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error.");
+  }
+});
 
 app.get("/deleteQR", (req, res) => {
   if (req.isAuthenticated()) {

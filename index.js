@@ -379,78 +379,78 @@ app.get("/generateQR", (req, res) => {
   }
 });
 
-// app.get("/deleteQR_qr", (req, res) => {
-//   if (req.isAuthenticated()) {
-//     const batch = req.query.batch;
-//     console.log(batch);
+app.get("/deleteQR_qr", (req, res) => {
+  if (req.isAuthenticated()) {
+    const batch = req.query.batch;
+    console.log(batch);
 
-//     if (!batch) {
-//       return res.status(400).send("Missing batch number in query.");
-//     }
+    if (!batch) {
+      return res.status(400).send("Missing batch number in query.");
+    }
 
-//     const qrPath = path.join("qrImages", `${batch}_qr.png`);
+    const qrPath = path.join("qrImages", `${batch}_qr.png`);
 
-//     fs.access(qrPath, fs.constants.F_OK, (err) => {
-//       if (err) {
-//         return res
-//           .status(404)
-//           .send(
-//             `<script>alert("QR image not found."); window.location.href="/qrdatabase";</script>`
-//           );
-//       }
+    fs.access(qrPath, fs.constants.F_OK, (err) => {
+      if (err) {
+        return res
+          .status(404)
+          .send(
+            `<script>alert("QR image not found."); window.location.href="/qrdatabase";</script>`
+          );
+      }
 
-//       fs.unlink(qrPath, (err) => {
-//         if (err) {
-//           console.error("Error deleting image:", err);
-//           return res
-//             .status(500)
-//             .send(
-//               `<script>alert("Failed to delete QR image."); window.location.href="/qrdatabase";</script>`
-//             );
-//         }
+      fs.unlink(qrPath, (err) => {
+        if (err) {
+          console.error("Error deleting image:", err);
+          return res
+            .status(500)
+            .send(
+              `<script>alert("Failed to delete QR image."); window.location.href="/qrdatabase";</script>`
+            );
+        }
 
-//         res.send(
-//           `<script>alert("✅ QR image deleted successfully."); window.location.href="/qrdatabase";</script>`
-//         );
-//       });
-//     });
-//   } else {
-//     res.redirect("/");
-//   }
-// });
+        res.send(
+          `<script>alert("✅ QR image deleted successfully."); window.location.href="/qrdatabase";</script>`
+        );
+      });
+    });
+  } else {
+    res.redirect("/");
+  }
+});
 
-// app.get("/generateQR_qr", (req, res) => {
-//   if (req.isAuthenticated()) {
-//     const batch = req.query.batch;
-//     console.log(batch);
+app.get("/generateQR_qr", (req, res) => {
+  if (req.isAuthenticated()) {
+    const batch = req.query.batch;
+    console.log(batch);
 
-//     const domain = process.env.DOMAIN;
-//     const productURL = `${domain}/verify/?batch=${batch}`;
+    const domain = process.env.DOMAIN;
+    const productURL = `${domain}/verify/?batch=${batch}`;
 
-//     qrcode.toFile(
-//       `qrImages/${batch}_qr.png`,
-//       productURL,
-//       {
-//         color: {
-//           dark: "#000", // QR code color
-//           light: "#FFF", // Background color
-//         },
-//       },
-//       function (err) {
-//         if (err) {
-//           console.error(err);
-//           res.status(500).send("Error generating QR code.");
-//           return;
-//         }
+    qrcode.toFile(
+      `qrImages/${batch}_qr.png`,
+      productURL,
+      {
+        color: {
+          dark: "#000", // QR code color
+          light: "#FFF", // Background color
+        },
+      },
+      function (err) {
+        if (err) {
+          console.error(err);
+          res.status(500).send("Error generating QR code.");
+          return;
+        }
 
-//         // 🚀 Redirect to the client UI after QR is saved
-//         res.redirect(`/adminclientui_qr/?batch=${batch}`);
-//       }
-//     );
-//   } else {
-//     res.redirect("/");
-//   }
-// });
+        // 🚀 Redirect to the client UI after QR is saved
+        res.redirect(`/adminclientui_qr/?batch=${batch}`);
+      }
+    );
+  } else {
+    res.redirect("/");
+  }
+});
 
 app.get("/downloadQR", (req, res) => {
   if (req.isAuthenticated()) {

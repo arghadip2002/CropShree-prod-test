@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/headeradmin') %>
+    <!-- <link rel="stylesheet" href="/css/admin.css" /> -->
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-buttons">
+        <a href="/gtinDatabase">GTIN Database</a>
+        <!-- <a href="/customerdatabase">Customer Database</a> -->
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logoutSure">Logout</a>
+      </div>
+    </nav>
+
+    <!-- Product Registration Form -->
+    <div class="form-container">
+      <h2>Product Display</h2>
+      <form
+        action="/update_display"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <!-- <div class="form-group">
+          <label for="gtin">GTIN*</label>
+          <input type="text" id="gtin" name="gtin" required />
+        </div>
+
+        <div class="form-group">
+          <label for="batchNumber">Product Name*</label>
+          <input type="text" id="batchNumber" name="product_name" required />
+        </div> -->
+
+        <div class="form-group">
+          <label for="product_type">Product Type*</label>
+          <input type="text" id="product_type" name="product_type" required />
+        </div>
+
+        <div class="form-group">
+          <label for="leaflet">Leaflet (PDF)</label>
+          <input
+            type="file"
+            id="leaflet"
+            name="leaflet"
+            accept=".pdf"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="image">Image (jpeg)</label>
+          <input type="file" id="image" name="image" accept=".jpeg" required />
+        </div>
+
+        <button type="submit" class="submit-btn">Submit</button>
+      </form>
+    </div>
+  </body>
+</html>

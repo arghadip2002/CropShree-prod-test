@@ -15,6 +15,15 @@
           <table>
             <tbody>
               <tr>
+                <img
+                  src="product_jpeg/<%= product.product_type %>.jpeg"
+                  alt="product image"
+                  width="200"
+                  height="200"
+                  class="product-image"
+                />
+              </tr>
+              <tr>
                 <th>Product Name</th>
                 <td><%= product.product_name %></td>
               </tr>
@@ -27,6 +36,14 @@
                 <td><%= product.gtin %></td>
               </tr>
               <tr>
+                <th>Brand Name</th>
+                <td>Cropshree Lifesciences</td>
+              </tr>
+              <tr>
+                <th>Marketed by</th>
+                <td>Cropshree Lifesciences</td>
+              </tr>
+              <tr>
                 <th>Manufactured</th>
                 <td><%= product.mfg_date.toISOString().slice(0, 10) %></td>
               </tr>
@@ -34,9 +51,18 @@
                 <th>Expires</th>
                 <td><%= product.exp_date.toISOString().slice(0, 10) %></td>
               </tr>
+
               <tr>
                 <th>Leaflet</th>
-                <td><a href="#" class="leaflet-link">View Leaflet</a></td>
+                <td>
+                  <a
+                    href="/product_pdf/<%= product.product_type %>.pdf"
+                    class="leaflet-link"
+                    download
+                  >
+                    Download Leaflet
+                  </a>
+                </td>
               </tr>
             </tbody>
           </table>

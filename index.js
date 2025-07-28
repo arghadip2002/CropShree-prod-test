@@ -8,6 +8,7 @@ import qrcode from "qrcode";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import multer from "multer";
 import env from "dotenv";
 
 const app = express();
@@ -27,6 +28,8 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use("/qrImages", express.static("qrImages"));
+app.use("/product_pdf", express.static("public/product_pdf"));
+app.use("/product_jpeg", express.static("public/product_jpeg"));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -39,22 +42,53 @@ app.use(passport.session());
 //   database: process.env.DATABASE,
 // });
 
+const db = new pg.Client({
+  user: process.env.PG_USER,
+  host: process.env.PG_HOST,
+  port: process.env.PG_PORT,
+  password: process.env.PG_PASSWORD,
+  database: process.env.PG_DATABASE,
+});
+db.connect();
+
 // const db = new pg.Client({
-//   user: process.env.PG_USER,
-//   host: process.env.PG_HOST,
-//   port: process.env.PG_PORT,
-//   password: process.env.PG_PASSWORD,
-//   database: process.env.PG_DATABASE,
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false, // Supabase requires SSL for external connections
+//   },
 // });
 // db.connect();
 
-const db = new pg.Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // Supabase requires SSL for external connections
+// Configure storage for multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    if (file.mimetype === "application/pdf") {
+      cb(null, "public/product_pdf/");
+    } else if (file.mimetype === "image/jpeg") {
+      cb(null, "public/product_jpeg/");
+    }
+  },
+  filename: function (req, file, cb) {
+    const ptype = req.body.product_type;
+    // console.log(req.body);
+    const ext = file.mimetype === "application/pdf" ? ".pdf" : ".jpeg";
+    cb(null, `${ptype}${ext}`);
   },
 });
-db.connect();
+
+const upload = multer({
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    // Only accept PDF and JPEG files
+    if (file.mimetype === "application/pdf" || file.mimetype === "image/jpeg") {
+      cb(null, true);
+    } else {
+      cb(new Error("Only PDF and JPEG files are allowed"));
+    }
+  },
+});
+
+// GET Request ---------------------------------------------------------------------
 
 app.get("/", (req, res) => {
   res.render("home.ejs");
@@ -64,9 +98,22 @@ app.get("/login", (req, res) => {
   res.render("login.ejs");
 });
 
-app.get("/dashboard", (req, res) => {
+app.get("/dashboard", async (req, res) => {
   if (req.isAuthenticated()) {
-    res.render("dashboard.ejs");
+    const result = await db.query("SELECT COUNT(*) FROM customers");
+    const customerQrScanned = result.rows[0].count;
+
+    const result1 = await db.query("SELECT COUNT(*) FROM gtin_registration");
+    const totalGTIN = result1.rows[0].count;
+
+    const result2 = await db.query("SELECT COUNT(*) FROM products");
+    const totalProduct = result2.rows[0].count;
+
+    res.render("dashboard.ejs", {
+      numberOfCustomers: customerQrScanned,
+      totalGTIN: totalGTIN,
+      totalProduct: totalProduct,
+    });
   } else {
     res.redirect("/");
   }
@@ -110,6 +157,10 @@ app.get("/delete_batch_toDashboard", (req, res) => {
   } else {
     res.redirect("/");
   }
+});
+
+app.get("/displayUpdate", (req, res) => {
+  res.render("displayUpdate.ejs");
 });
 
 // app.get("/view_database", async (req, res) => {
@@ -178,7 +229,7 @@ app.get("/clientui", async (req, res) => {
   try {
     const result = await db.query(
       `
-        SELECT p.*, g.product_name
+        SELECT p.*, g.product_name, g.product_type
         FROM products p
         LEFT JOIN gtin_registration g ON p.gtin = g.gtin
         WHERE p.batch = $1
@@ -205,7 +256,7 @@ app.get("/adminclientui", async (req, res) => {
     try {
       const result = await db.query(
         `
-        SELECT p.*, g.product_name
+        SELECT p.*, g.product_name, g.product_type
         FROM products p
         LEFT JOIN gtin_registration g ON p.gtin = g.gtin
         WHERE p.batch = $1
@@ -228,36 +279,32 @@ app.get("/adminclientui", async (req, res) => {
   }
 });
 
-app.get("/adminclientui_qr", async (req, res) => {
-  if (req.isAuthenticated()) {
-    const batch = req.query.batch;
-    if (!batch) return res.status(400).send("Missing batch parameter.");
+// app.get("/adminclientui_qr", async (req, res) => {
+//   const batch = req.query.batch;
+//   if (!batch) return res.status(400).send("Missing batch parameter.");
 
-    try {
-      const result = await db.query(
-        `
-        SELECT p.*, g.product_name
-        FROM products p
-        LEFT JOIN gtin_registration g ON p.gtin = g.gtin
-        WHERE p.batch = $1
-      `,
-        [batch]
-      );
+//   try {
+//     const result = await db.query(
+//       `
+//         SELECT p.*, g.product_name, product_type
+//         FROM products p
+//         LEFT JOIN gtin_registration g ON p.gtin = g.gtin
+//         WHERE p.batch = $1
+//       `,
+//       [batch]
+//     );
 
-      if (result.rows.length === 0) {
-        return res.status(404).send("Product not found.");
-      }
+//     if (result.rows.length === 0) {
+//       return res.status(404).send("Product not found.");
+//     }
 
-      const product = result.rows[0];
-      res.render("adminClientui_qr.ejs", { product: product });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Server error.");
-    }
-  } else {
-    res.redirect("/");
-  }
-});
+//     const product = result.rows[0];
+//     res.render("adminClientui_qr.ejs", { product: product });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Server error.");
+//   }
+// });
 
 app.get("/deleteQR", (req, res) => {
   if (req.isAuthenticated()) {
@@ -324,7 +371,7 @@ app.get("/generateQR", (req, res) => {
         }
 
         // 🚀 Redirect to the client UI after QR is saved
-        res.redirect(`/adminclientui/?batch=${batch}`);
+        res.redirect(`/adminclientui?batch=${batch}`);
       }
     );
   } else {
@@ -332,78 +379,78 @@ app.get("/generateQR", (req, res) => {
   }
 });
 
-app.get("/deleteQR_qr", (req, res) => {
-  if (req.isAuthenticated()) {
-    const batch = req.query.batch;
-    console.log(batch);
+// app.get("/deleteQR_qr", (req, res) => {
+//   if (req.isAuthenticated()) {
+//     const batch = req.query.batch;
+//     console.log(batch);
 
-    if (!batch) {
-      return res.status(400).send("Missing batch number in query.");
-    }
+//     if (!batch) {
+//       return res.status(400).send("Missing batch number in query.");
+//     }
 
-    const qrPath = path.join("qrImages", `${batch}_qr.png`);
+//     const qrPath = path.join("qrImages", `${batch}_qr.png`);
 
-    fs.access(qrPath, fs.constants.F_OK, (err) => {
-      if (err) {
-        return res
-          .status(404)
-          .send(
-            `<script>alert("QR image not found."); window.location.href="/qrdatabase";</script>`
-          );
-      }
+//     fs.access(qrPath, fs.constants.F_OK, (err) => {
+//       if (err) {
+//         return res
+//           .status(404)
+//           .send(
+//             `<script>alert("QR image not found."); window.location.href="/qrdatabase";</script>`
+//           );
+//       }
 
-      fs.unlink(qrPath, (err) => {
-        if (err) {
-          console.error("Error deleting image:", err);
-          return res
-            .status(500)
-            .send(
-              `<script>alert("Failed to delete QR image."); window.location.href="/qrdatabase";</script>`
-            );
-        }
+//       fs.unlink(qrPath, (err) => {
+//         if (err) {
+//           console.error("Error deleting image:", err);
+//           return res
+//             .status(500)
+//             .send(
+//               `<script>alert("Failed to delete QR image."); window.location.href="/qrdatabase";</script>`
+//             );
+//         }
 
-        res.send(
-          `<script>alert("✅ QR image deleted successfully."); window.location.href="/qrdatabase";</script>`
-        );
-      });
-    });
-  } else {
-    res.redirect("/");
-  }
-});
+//         res.send(
+//           `<script>alert("✅ QR image deleted successfully."); window.location.href="/qrdatabase";</script>`
+//         );
+//       });
+//     });
+//   } else {
+//     res.redirect("/");
+//   }
+// });
 
-app.get("/generateQR_qr", (req, res) => {
-  if (req.isAuthenticated()) {
-    const batch = req.query.batch;
-    console.log(batch);
+// app.get("/generateQR_qr", (req, res) => {
+//   if (req.isAuthenticated()) {
+//     const batch = req.query.batch;
+//     console.log(batch);
 
-    const domain = process.env.DOMAIN;
-    const productURL = `${domain}/verify/?batch=${batch}`;
+//     const domain = process.env.DOMAIN;
+//     const productURL = `${domain}/verify/?batch=${batch}`;
 
-    qrcode.toFile(
-      `qrImages/${batch}_qr.png`,
-      productURL,
-      {
-        color: {
-          dark: "#000", // QR code color
-          light: "#FFF", // Background color
-        },
-      },
-      function (err) {
-        if (err) {
-          console.error(err);
-          res.status(500).send("Error generating QR code.");
-          return;
-        }
+//     qrcode.toFile(
+//       `qrImages/${batch}_qr.png`,
+//       productURL,
+//       {
+//         color: {
+//           dark: "#000", // QR code color
+//           light: "#FFF", // Background color
+//         },
+//       },
+//       function (err) {
+//         if (err) {
+//           console.error(err);
+//           res.status(500).send("Error generating QR code.");
+//           return;
+//         }
 
-        // 🚀 Redirect to the client UI after QR is saved
-        res.redirect(`/adminclientui_qr/?batch=${batch}`);
-      }
-    );
-  } else {
-    res.redirect("/");
-  }
-});
+//         // 🚀 Redirect to the client UI after QR is saved
+//         res.redirect(`/adminclientui_qr/?batch=${batch}`);
+//       }
+//     );
+//   } else {
+//     res.redirect("/");
+//   }
+// });
 
 app.get("/downloadQR", (req, res) => {
   if (req.isAuthenticated()) {
@@ -521,6 +568,50 @@ app.get("/qrdatabase", (req, res) => {
   });
 });
 
+app.get("/display", (req, res) => {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  const pdfDir = path.join(__dirname, "public/product_pdf");
+  const imgDir = path.join(__dirname, "public/product_jpeg");
+
+  // Get all PDF and image files
+  const pdfFiles = fs.readdirSync(pdfDir).map((f) => path.parse(f).name);
+  const imgFiles = fs.readdirSync(imgDir).map((f) => path.parse(f).name);
+
+  // Combine all unique product types
+  const allFiles = [...new Set([...pdfFiles, ...imgFiles])];
+
+  // Prepare file data for the view
+  const files = allFiles
+    .map((productType) => ({
+      productType,
+      hasPDF: pdfFiles.includes(productType),
+      hasImage: imgFiles.includes(productType),
+    }))
+    .sort((a, b) => a.productType.localeCompare(b.productType));
+
+  res.render("display", { files });
+});
+
+// Route to serve PDF files with download
+app.get("/product_pdf/:filename", (req, res) => {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  const filePath = path.join(
+    __dirname,
+    "public/product_pdf",
+    req.params.filename
+  );
+
+  if (fs.existsSync(filePath)) {
+    res.download(filePath);
+  } else {
+    res.status(404).send("PDF not found");
+  }
+});
+
 // POST -----------------------------------------------------------------
 
 app.post("/submitCustomer", async (req, res) => {
@@ -598,29 +689,99 @@ app.post("/submit_product", async (req, res) => {
   }
 });
 
+// app.post("/submit_gtin", async (req, res) => {
+//   const gtin = req.body.gtin;
+//   // const productName = req.body.productName;
+//   // const eDate = req.body.expDate;
+//   const product_type = req.body.product_type;
+//   const product_name = req.body.product_name;
+
+//   const result = await db.query(
+//     "SELECT * FROM gtin_registration WHERE gtin = $1",
+//     [gtin]
+//   );
+
+//   if (result.rows.length === 0) {
+//     await db.query(
+//       "INSERT INTO gtin_registration (gtin, product_name, product_type) VALUES ($1, $2, $3)",
+//       [gtin, product_name, product_type]
+//     );
+
+//     res.redirect("/gtinRegister");
+//   } else {
+//     res.send("Batch Already Exist");
+//   }
+// });
+
 app.post("/submit_gtin", async (req, res) => {
   const gtin = req.body.gtin;
-  // const productName = req.body.productName;
-  // const eDate = req.body.expDate;
   const product_type = req.body.product_type;
   const product_name = req.body.product_name;
 
-  const result = await db.query(
-    "SELECT * FROM gtin_registration WHERE gtin = $1",
-    [gtin]
-  );
-
-  if (result.rows.length === 0) {
-    await db.query(
-      "INSERT INTO gtin_registration (gtin, product_name, product_type) VALUES ($1, $2, $3)",
-      [gtin, product_name, product_type]
+  try {
+    const result = await db.query(
+      "SELECT * FROM gtin_registration WHERE gtin = $1",
+      [gtin]
     );
 
-    res.redirect("/gtinRegister");
-  } else {
-    res.send("Batch Already Exist");
+    if (result.rows.length === 0) {
+      await db.query(
+        "INSERT INTO gtin_registration (gtin, product_name, product_type) VALUES ($1, $2, $3)",
+        [gtin, product_name, product_type]
+      );
+
+      res.redirect("/gtinRegister");
+    } else {
+      res.send("GTIN Already Exists");
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error processing your request GTIN");
   }
 });
+
+app.post(
+  "/update_display",
+  upload.fields([
+    { name: "leaflet", maxCount: 1 },
+    { name: "image", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    const product_type = req.body.product_type;
+
+    try {
+      const result = await db.query(
+        "SELECT * FROM gtin_registration WHERE product_type = $1",
+        [product_type]
+      );
+
+      if (result.rows.length > 0) {
+        res.redirect("/dashboard");
+
+        // res.redirect("/gtinRegister");
+      } else {
+        // Delete uploaded files if GTIN already exists
+        if (req.files["leaflet"]) {
+          fs.unlinkSync(req.files["leaflet"][0].path);
+        }
+        if (req.files["image"]) {
+          fs.unlinkSync(req.files["image"][0].path);
+        }
+        res.send("Invalid Product Name");
+      }
+    } catch (err) {
+      console.error(err);
+      // Delete uploaded files if error occurs
+      if (req.files["leaflet"]) {
+        fs.unlinkSync(req.files["leaflet"][0].path);
+      }
+      if (req.files["image"]) {
+        fs.unlinkSync(req.files["image"][0].path);
+      }
+      res.status(500).send("Error processing your request");
+    }
+  }
+);
 
 app.post("/delete_batch", async (req, res) => {
   const batch = req.body.batchNumber;

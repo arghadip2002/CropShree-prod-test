@@ -1,3 +1,18 @@
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("/images/bg.png"); /* update the path */
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+  filter: blur(5px);
+  opacity: 0.9;
+}
+
 body {
   margin: 0;
   padding: 0;

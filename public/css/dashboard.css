@@ -17,6 +17,42 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
+.infographic-container {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+}
+
+.infographic-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  width: 250px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.infographic-card h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.infographic-card p {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #22c55e;
+  margin: 0;
+}
+
+.infographic-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(34, 197, 94, 0.2);
+}
+
 .logout-link {
   color: #ffffff;
   background-color: #ef4444;

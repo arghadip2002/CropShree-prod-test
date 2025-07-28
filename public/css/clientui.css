@@ -11,6 +11,22 @@ body {
   align-items: flex-start;
 }
 
+.product-image {
+  display: block;
+  margin: 30px auto;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
 .product-card {
   background-color: #ffffff;
   border-radius: 1rem;

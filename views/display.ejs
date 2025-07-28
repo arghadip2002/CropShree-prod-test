@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Files</title>
+    <link rel="stylesheet" href="/css/display.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-buttons">
+        <!-- <a href="/customerdatabase">Customer Database</a> -->
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logoutSure">Logout</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1>Available Product Files</h1>
+      <table class="file-table">
+        <thead>
+          <tr>
+            <th>Product Type</th>
+            <th>Image</th>
+            <th>PDF</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% files.forEach(file => { %>
+          <tr>
+            <td><%= file.productType %></td>
+            <td>
+              <% if (file.hasImage) { %>
+              <img
+                src="/product_jpeg/<%= file.productType %>.jpeg"
+                alt="<%= file.productType %>"
+                class="file-img"
+              />
+              <% } else { %>
+              <span class="missing">No Image</span>
+              <% } %>
+            </td>
+            <td>
+              <% if (file.hasPDF) { %>
+              <a
+                href="/product_pdf/<%= file.productType %>.pdf"
+                download="<%= file.productType %>.pdf"
+                class="pdf-link"
+              >
+                Download
+              </a>
+              <% } else { %>
+              <span class="missing">No PDF</span>
+              <% } %>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

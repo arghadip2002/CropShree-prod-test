@@ -19,6 +19,8 @@
         <a href="/delete_batch_toDashboard" class="sidebar-btn">Delete Batch</a>
         <a href="/gtinRegister" class="sidebar-btn">GTIN Registration</a>
         <a href="/delete_gtin" class="sidebar-btn">GTIN Deletion</a>
+        <a href="/display" class="sidebar-btn">View all Product Files</a>
+        <a href="/displayUpdate" class="sidebar-btn">Update Product Display</a>
       </aside>
 
       <!-- Main Panel: Major Sections -->
@@ -29,6 +31,21 @@
           <a href="/customerdatabase" class="card">Customer Database</a>
           <a href="/gtinDatabase" class="card">GTIN Dashboard</a>
           <a href="/qrdatabase" class="card">QR Dashboard</a>
+        </div>
+        <div class="infographic-container">
+          <div class="infographic-card">
+            <h3>🧾 GTIN Registered</h3>
+            <p><%= totalGTIN %></p>
+          </div>
+
+          <div class="infographic-card">
+            <h3>📦 Product Batches</h3>
+            <p><%= totalProduct %></p>
+          </div>
+          <div class="infographic-card">
+            <h3>👥 Customers Scanned</h3>
+            <p><%= numberOfCustomers %></p>
+          </div>
         </div>
       </main>
     </div>

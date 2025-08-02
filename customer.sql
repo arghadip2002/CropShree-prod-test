@@ -11,6 +11,7 @@ CREATE TABLE gtin_registration (
   gtin VARCHAR(50) PRIMARY KEY,
   product_name TEXT NOT NULL,
   product_type VARCHAR(100) NOT NULL
+
 );
 
 CREATE TABLE products (

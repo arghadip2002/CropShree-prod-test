@@ -42,22 +42,22 @@ app.use(passport.session());
 //   database: process.env.DATABASE,
 // });
 
-// const db = new pg.Client({
-//   user: process.env.PG_USER,
-//   host: process.env.PG_HOST,
-//   port: process.env.PG_PORT,
-//   password: process.env.PG_PASSWORD,
-//   database: process.env.PG_DATABASE,
-// });
-// db.connect();
-
 const db = new pg.Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // Supabase requires SSL for external connections
-  },
+  user: process.env.PG_USER,
+  host: process.env.PG_HOST,
+  port: process.env.PG_PORT,
+  password: process.env.PG_PASSWORD,
+  database: process.env.PG_DATABASE,
 });
 db.connect();
+
+// const db = new pg.Client({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false, // Supabase requires SSL for external connections
+//   },
+// });
+// db.connect();
 
 // Configure storage for multer
 const storage = multer.diskStorage({
@@ -160,7 +160,11 @@ app.get("/delete_batch_toDashboard", (req, res) => {
 });
 
 app.get("/displayUpdate", (req, res) => {
-  res.render("displayUpdate.ejs");
+  if (req.isAuthenticated()) {
+    res.render("displayUpdate.ejs");
+  } else {
+    res.redirect("/");
+  }
 });
 
 // app.get("/view_database", async (req, res) => {
@@ -187,14 +191,41 @@ app.get("/displayUpdate", (req, res) => {
 app.get("/view_database", async (req, res) => {
   if (req.isAuthenticated()) {
     try {
-      const result = await db.query(`
-        SELECT p.id, p.batch, p.gtin, p.mfg_date, p.exp_date, g.product_name
-        FROM products p
-        LEFT JOIN gtin_registration g ON p.gtin = g.gtin
-        ORDER BY p.id
+      let result = await db.query(`
+        SELECT 
+        p.id,
+        p.batch,
+        p.gtin,
+        TO_CHAR(p.mfg_date, 'DD/MM/YYYY') AS mfg_date,
+        TO_CHAR(p.exp_date, 'DD/MM/YYYY') AS exp_date,
+        g.product_name
+      FROM products p
+      LEFT JOIN gtin_registration g ON p.gtin = g.gtin
+      ORDER BY p.id;
+
       `);
 
-      res.render("viewDatabase.ejs", { products: result.rows });
+      result = result.rows;
+
+      const queryBatch = req.query.batch?.toLowerCase();
+
+      if (queryBatch) {
+        result = await db.query(
+          `SELECT 
+            p.id, p.batch, p.gtin, 
+            TO_CHAR(p.mfg_date, 'DD/MM/YYYY') AS mfg_date, 
+            TO_CHAR(p.exp_date, 'DD/MM/YYYY') AS exp_date, 
+            g.product_name 
+          FROM products p 
+          LEFT JOIN gtin_registration g ON p.gtin = g.gtin 
+          WHERE LOWER(p.batch) LIKE $1 
+          ORDER BY p.id`,
+          [`%${queryBatch}%`]
+        );
+        result = result.rows;
+      }
+
+      res.render("viewDatabase.ejs", { products: result || [], queryBatch });
     } catch (err) {
       console.error(err);
       res.status(500).send("Error fetching products");
@@ -280,29 +311,33 @@ app.get("/adminclientui", async (req, res) => {
 });
 
 app.get("/adminclientui_qr", async (req, res) => {
-  const batch = req.query.batch;
-  if (!batch) return res.status(400).send("Missing batch parameter.");
+  if (req.isAuthenticated()) {
+    const batch = req.query.batch;
+    if (!batch) return res.status(400).send("Missing batch parameter.");
 
-  try {
-    const result = await db.query(
-      `
+    try {
+      const result = await db.query(
+        `
         SELECT p.*, g.product_name, product_type
         FROM products p
         LEFT JOIN gtin_registration g ON p.gtin = g.gtin
         WHERE p.batch = $1
       `,
-      [batch]
-    );
+        [batch]
+      );
 
-    if (result.rows.length === 0) {
-      return res.status(404).send("Product not found.");
+      if (result.rows.length === 0) {
+        return res.status(404).send("Product not found.");
+      }
+
+      const product = result.rows[0];
+      res.render("adminClientui_qr.ejs", { product: product });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Server error.");
     }
-
-    const product = result.rows[0];
-    res.render("adminClientui_qr.ejs", { product: product });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error.");
+  } else {
+    res.redirect("/");
   }
 });
 
@@ -480,10 +515,43 @@ app.get("/verify", (req, res) => {
 app.get("/customerdatabase", async (req, res) => {
   if (req.isAuthenticated()) {
     try {
-      const result = await db.query(
+      let result = await db.query(
         "SELECT * FROM customers ORDER BY customer_id"
       );
-      res.render("customerdatabase.ejs", { customers: result.rows });
+
+      result = result.rows;
+
+      const queryBatch = req.query.batch?.toLowerCase();
+      const location = req.query.location?.toLowerCase();
+
+      if (queryBatch && location) {
+        result = await db.query(
+          "SELECT * FROM customers WHERE batch ILIKE $1 AND location ILIKE $2 ORDER BY customer_id",
+          [`%${queryBatch}%`, `%${location}%`]
+        );
+        result = result.rows;
+      } else if (queryBatch) {
+        result = await db.query(
+          "SELECT * FROM customers WHERE batch ILIKE $1 ORDER BY customer_id",
+          [`%${queryBatch}%`]
+        );
+        result = result.rows;
+      } else if (location) {
+        result = await db.query(
+          "SELECT * FROM customers WHERE location ILIKE $1 ORDER BY customer_id",
+          [`%${location}%`]
+        );
+        result = result.rows;
+      } else {
+        result = await db.query("SELECT * FROM customers ORDER BY customer_id");
+        result = result.rows;
+      }
+
+      res.render("customerdatabase.ejs", {
+        customers: result,
+        queryBatch,
+        location,
+      });
       console.log(result);
     } catch (err) {
       console.error(err);
@@ -497,10 +565,21 @@ app.get("/customerdatabase", async (req, res) => {
 app.get("/gtinDatabase", async (req, res) => {
   if (req.isAuthenticated()) {
     try {
-      const result = await db.query(
+      let result = await db.query(
         "SELECT * FROM gtin_registration ORDER BY id"
       );
-      res.render("gtinDatabase.ejs", { gtinReg: result.rows });
+
+      result = result.rows;
+      const gtin = req.query.gtin?.toLowerCase();
+      if (gtin) {
+        result = await db.query(
+          "SELECT * FROM gtin_registration WHERE gtin ILIKE $1 ORDER BY id",
+          [`%${gtin}%`]
+        );
+        result = result.rows;
+      }
+
+      res.render("gtinDatabase.ejs", { gtinReg: result, gtin });
       console.log(result);
     } catch (err) {
       console.error(err);
@@ -536,62 +615,78 @@ app.get("/gtinDatabase", async (req, res) => {
 // });
 
 app.get("/qrdatabase", (req, res) => {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
+  if (req.isAuthenticated()) {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
 
-  const qrDir = path.join(__dirname, "qrImages");
+    const qrDir = path.join(__dirname, "qrImages");
 
-  const queryBatch = req.query.batch?.toLowerCase();
+    const queryBatch = req.query.batch?.toLowerCase();
 
-  fs.readdir(qrDir, (err, files) => {
-    if (err) return res.send("Error reading QR folder");
+    fs.readdir(qrDir, (err, files) => {
+      if (err) return res.send("Error reading QR folder");
 
-    let qrData = files
-      .filter((file) => file.endsWith("_qr.png"))
-      .map((file, index) => {
-        const batch = file.replace("_qr.png", "");
-        return {
-          id: index + 1,
-          batch,
-          qrPath: `/qrImages/${file}`,
-        };
-      });
+      let qrData = files
+        .filter((file) => file.endsWith("_qr.png"))
+        .map((file, index) => {
+          const batch = file.replace("_qr.png", "");
+          return {
+            id: index + 1,
+            batch,
+            qrPath: `/qrImages/${file}`,
+          };
+        });
 
-    // Apply search filter if query exists
-    if (queryBatch) {
-      qrData = qrData.filter((record) =>
-        record.batch.toLowerCase().includes(queryBatch)
-      );
-    }
+      // Apply search filter if query exists
+      if (queryBatch) {
+        qrData = qrData.filter((record) =>
+          record.batch.toLowerCase().includes(queryBatch)
+        );
+      }
 
-    res.render("qrdatabase", { qrData, queryBatch });
-  });
+      res.render("qrdatabase", { qrData, queryBatch });
+    });
+  } else {
+    res.redirect("/");
+  }
 });
 
 app.get("/display", (req, res) => {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
+  if (req.isAuthenticated()) {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
 
-  const pdfDir = path.join(__dirname, "public/product_pdf");
-  const imgDir = path.join(__dirname, "public/product_jpeg");
+    const pdfDir = path.join(__dirname, "public/product_pdf");
+    const imgDir = path.join(__dirname, "public/product_jpeg");
 
-  // Get all PDF and image files
-  const pdfFiles = fs.readdirSync(pdfDir).map((f) => path.parse(f).name);
-  const imgFiles = fs.readdirSync(imgDir).map((f) => path.parse(f).name);
+    // Get all PDF and image files
+    const pdfFiles = fs.readdirSync(pdfDir).map((f) => path.parse(f).name);
+    const imgFiles = fs.readdirSync(imgDir).map((f) => path.parse(f).name);
 
-  // Combine all unique product types
-  const allFiles = [...new Set([...pdfFiles, ...imgFiles])];
+    // Combine all unique product types
+    const allFiles = [...new Set([...pdfFiles, ...imgFiles])];
 
-  // Prepare file data for the view
-  const files = allFiles
-    .map((productType) => ({
-      productType,
-      hasPDF: pdfFiles.includes(productType),
-      hasImage: imgFiles.includes(productType),
-    }))
-    .sort((a, b) => a.productType.localeCompare(b.productType));
+    // Prepare file data for the view
+    let files = allFiles
+      .map((productType) => ({
+        productType,
+        hasPDF: pdfFiles.includes(productType),
+        hasImage: imgFiles.includes(productType),
+      }))
+      .sort((a, b) => a.productType.localeCompare(b.productType));
 
-  res.render("display", { files });
+    const pDisplay = req.query.pdisplay;
+    // Apply search filter if query exists
+    if (pDisplay) {
+      files = files.filter((record) =>
+        record.productType.toLowerCase().includes(pDisplay.toLowerCase())
+      );
+    }
+
+    res.render("display", { files, pDisplay });
+  } else {
+    res.redirect("/");
+  }
 });
 
 // Route to serve PDF files with download
@@ -610,6 +705,10 @@ app.get("/product_pdf/:filename", (req, res) => {
   } else {
     res.status(404).send("PDF not found");
   }
+});
+
+app.get("/error", (req, res) => {
+  res.render("error.ejs");
 });
 
 // POST -----------------------------------------------------------------
@@ -639,53 +738,121 @@ app.post(
   })
 );
 
+function convertDMYtoISO(dateStr) {
+  const [day, month, year] = dateStr.split("/");
+  return `${year}-${month}-${day}`; // e.g. '2025-08-28'
+}
+
+// app.post("/submit_product", async (req, res) => {
+//   const gtin = req.body.gtin;
+//   // const productName = req.body.productName;
+//   const eDate = req.body.expDate;
+//   const mDate = req.body.mfgDate;
+//   const batch = req.body.batchNumber;
+
+//   const result0 = await db.query(
+//     "SELECT * FROM gtin_registration WHERE gtin = $1",
+//     [gtin]
+//   );
+
+//   if (result0.rows.length > 0) {
+//     const result = await db.query("SELECT * FROM products WHERE batch = $1", [
+//       batch,
+//     ]);
+
+//     if (result.rows.length === 0) {
+//       await db.query(
+//         "INSERT INTO products (batch, gtin, mfg_date, exp_date) VALUES ($1, $2, $3, $4)",
+//         [batch, gtin, mDate, eDate]
+//       );
+
+//       const domain = process.env.DOMAIN;
+//       const productURL = `${domain}/verify/?batch=${batch}`;
+//       // Generate QR code and save as PNG file
+//       // const fs = await import("fs");
+//       qrcode.toFile(
+//         `qrImages/${batch}_qr.png`,
+//         productURL,
+//         {
+//           color: {
+//             dark: "#000", // QR code color
+//             light: "#FFF", // Background color
+//           },
+//         },
+//         function (err) {
+//           if (err) console.error(err);
+//         }
+//       );
+
+//       res.redirect("/adminpanel");
+//     } else {
+//       res.send("Batch Already Exist");
+//     }
+//   } else {
+//     res.send("GTIN is Not Registered, Enter a Valid GTIN");
+//   }
+// });
+
 app.post("/submit_product", async (req, res) => {
   const gtin = req.body.gtin;
-  // const productName = req.body.productName;
-  const eDate = req.body.expDate;
-  const mDate = req.body.mfgDate;
   const batch = req.body.batchNumber;
 
-  const result0 = await db.query(
-    "SELECT * FROM gtin_registration WHERE gtin = $1",
-    [gtin]
-  );
+  // Convert dates to ISO format
+  const mDate = convertDMYtoISO(req.body.mfgDate);
+  const eDate = convertDMYtoISO(req.body.expDate);
 
-  if (result0.rows.length > 0) {
-    const result = await db.query("SELECT * FROM products WHERE batch = $1", [
-      batch,
-    ]);
+  try {
+    const result0 = await db.query(
+      "SELECT * FROM gtin_registration WHERE gtin = $1",
+      [gtin]
+    );
 
-    if (result.rows.length === 0) {
-      await db.query(
-        "INSERT INTO products (batch, gtin, mfg_date, exp_date) VALUES ($1, $2, $3, $4)",
-        [batch, gtin, mDate, eDate]
-      );
+    if (result0.rows.length > 0) {
+      const result = await db.query("SELECT * FROM products WHERE batch = $1", [
+        batch,
+      ]);
 
-      const domain = process.env.DOMAIN;
-      const productURL = `${domain}/verify/?batch=${batch}`;
-      // Generate QR code and save as PNG file
-      // const fs = await import("fs");
-      qrcode.toFile(
-        `qrImages/${batch}_qr.png`,
-        productURL,
-        {
-          color: {
-            dark: "#000", // QR code color
-            light: "#FFF", // Background color
+      if (result.rows.length === 0) {
+        await db.query(
+          "INSERT INTO products (batch, gtin, mfg_date, exp_date) VALUES ($1, $2, $3, $4)",
+          [batch, gtin, mDate, eDate]
+        );
+
+        const domain = process.env.DOMAIN;
+        const productURL = `${domain}/verify/?batch=${batch}`;
+
+        qrcode.toFile(
+          `qrImages/${batch}_qr.png`,
+          productURL,
+          {
+            color: {
+              dark: "#000",
+              light: "#FFF",
+            },
           },
-        },
-        function (err) {
-          if (err) console.error(err);
-        }
-      );
+          function (err) {
+            if (err) console.error(err);
+          }
+        );
 
-      res.redirect("/adminpanel");
+        res.redirect("/adminpanel");
+      } else {
+        res.render("error.ejs", {
+          title: "Duplicate Batch",
+          message: "Batch Already Exist.",
+        });
+        // res.send("Batch Already Exist");
+      }
     } else {
-      res.send("Batch Already Exist");
+      // res.send("GTIN is Not Registered, Enter a Valid GTIN");
+      res.render("error.ejs", {
+        title: "Invalid GTIN",
+        message: "GTIN is Not Registered, Enter a Valid GTIN",
+      });
     }
-  } else {
-    res.send("GTIN is Not Registered, Enter a Valid GTIN");
+  } catch (err) {
+    console.error("Submit Product Error:", err.message);
+    res.status(500).send("Server Error: Could not submit product.");
   }
 });
 
@@ -732,7 +899,11 @@ app.post("/submit_gtin", async (req, res) => {
 
       res.redirect("/gtinRegister");
     } else {
-      res.send("GTIN Already Exists");
+      res.render("error.ejs", {
+        title: "Duplicate GTIN",
+        message: "GTIN Already Exist.",
+      });
+      // res.send("GTIN Already Exists");
     }
   } catch (err) {
     console.error(err);
@@ -767,7 +938,11 @@ app.post(
         if (req.files["image"]) {
           fs.unlinkSync(req.files["image"][0].path);
         }
-        res.send("Invalid Product Name");
+        res.render("error.ejs", {
+          title: "Invalid Product",
+          message: "Invalid Product Name",
+        });
+        // res.send("Invalid Product Name");
       }
     } catch (err) {
       console.error(err);
@@ -852,7 +1027,9 @@ app.post("/delete_gtin", async (req, res) => {
       );
     } else {
       await db.query("DELETE FROM gtin_registration WHERE gtin = $1", [gtin]);
-      res.redirect("/gtinDatabase");
+      `<script>alert("GTIN Deleted Successfully."); window.location.href="/gtinDatabase";</script>`;
+
+      // res.redirect("/gtinDatabase");
     }
   } catch (err) {
     console.error(err);
@@ -866,8 +1043,11 @@ passport.use(
   "local",
   new Strategy(async function verify(username, password, cb) {
     try {
-      const USERNAME = "Shivam@123";
-      const PASSWORD = "123";
+      const USERNAME = process.env.USERNAMEENV;
+      const PASSWORD = process.env.PASSWORDENV;
+
+      // const USERNAME = "Shivam@123";
+      // const PASSWORD = "123";
 
       if (username === USERNAME && password === PASSWORD) {
         return cb(null, username);

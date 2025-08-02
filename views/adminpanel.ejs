@@ -1,34 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <%- include('partials/headeradmin') %>
-    <!-- <link rel="stylesheet" href="/css/admin.css" /> -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/css/styleadminpanel.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
   </head>
   <body>
-    <!-- Navbar -->
+    <!-- Enhanced Navigation -->
     <nav class="navbar">
-      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-brand">
+        <i class="fas fa-plus-circle"></i>
+        Add Batch
+      </div>
       <div class="navbar-buttons">
-        <a href="/view_database">Product Database</a>
-        <!-- <a href="/customerdatabase">Customer Database</a> -->
-        <a href="/dashboard">Dashboard</a>
-        <a href="/logoutSure">Logout</a>
+        <a href="/dashboard">
+          <i class="fas fa-tachometer-alt"></i>
+          Dashboard
+        </a>
+
+        <a href="/view_database">
+          <i class="fas fa-database"></i>
+          Product Database
+        </a>
+
+        <a href="/logoutSure" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </a>
       </div>
     </nav>
 
     <!-- Product Registration Form -->
     <div class="form-container">
-      <h2>Product Registration</h2>
+      <h2><i class="fas fa-pencil-alt"></i> Batch Registration</h2>
       <form action="/submit_product" method="POST">
-        <div class="form-group">
-          <label for="gtin">GTIN*</label>
-          <input type="text" id="gtin" name="gtin" required />
-        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="gtin">GTIN*</label>
+            <input type="text" id="gtin" name="gtin" required />
+          </div>
 
-        <!-- <div class="form-group">
-          <label for="productName">Product Name*</label>
-          <input type="text" id="productName" name="productName" required />
-        </div> -->
+          <div class="form-group">
+            <label for="batchNumber">Batch Number*</label>
+            <input type="text" id="batchNumber" name="batchNumber" required />
+          </div>
+        </div>
 
         <div class="form-group">
           <label for="brandName">Brand Name</label>
@@ -52,28 +77,46 @@
           />
         </div>
 
-        <div class="form-group">
-          <label for="leaflet">Leaflet (PDF)</label>
-          <input type="file" id="leaflet" name="leaflet" accept=".pdf" />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="mfgDate">Manufacturing Date*</label>
+            <input
+              type="text"
+              id="mfgDate"
+              name="mfgDate"
+              required
+              placeholder="Select date"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="expDate">Expiry Date*</label>
+            <input
+              type="text"
+              id="expDate"
+              name="expDate"
+              required
+              placeholder="Select date"
+            />
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="mfgDate">Manufacturing Date*</label>
-          <input type="date" id="mfgDate" name="mfgDate" required />
-        </div>
-
-        <div class="form-group">
-          <label for="expDate">Expiry Date*</label>
-          <input type="date" id="expDate" name="expDate" required />
-        </div>
-
-        <div class="form-group">
-          <label for="batchNumber">Batch Number*</label>
-          <input type="text" id="batchNumber" name="batchNumber" required />
-        </div>
-
-        <button type="submit" class="submit-btn">Submit</button>
+        <button type="submit" class="submit-btn">Submit Product</button>
       </form>
     </div>
+
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+      flatpickr("#mfgDate", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+      });
+
+      flatpickr("#expDate", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+      });
+    </script>
   </body>
 </html>

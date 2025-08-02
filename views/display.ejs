@@ -3,61 +3,234 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Product Files</title>
-    <link rel="stylesheet" href="/css/display.css" />
+    <title>Product Files | CropShree</title>
+    <link rel="stylesheet" href="/css/styleViewDB.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      /* Minimalist additions */
+      .file-img {
+        max-width: 120px;
+        max-height: 120px;
+        border-radius: 4px;
+        object-fit: contain;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .file-img:hover {
+        transform: scale(1.03);
+      }
+
+      .pdf-link {
+        color: #000899;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .pdf-link:hover {
+        color: #1ee019;
+      }
+
+      .missing {
+        color: rgba(0, 8, 153, 0.4);
+        font-style: italic;
+      }
+
+      /* Lightbox styles */
+      .lightbox {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .lightbox img {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+      }
+
+      .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+      }
+    </style>
   </head>
   <body>
+    <!-- Navigation -->
     <nav class="navbar">
-      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-brand">
+        <i class="fas fa-box-open"></i>
+        Product Files
+      </div>
       <div class="navbar-buttons">
-        <!-- <a href="/customerdatabase">Customer Database</a> -->
-        <a href="/dashboard">Dashboard</a>
-        <a href="/logoutSure">Logout</a>
+        <a href="/dashboard">
+          <i class="fas fa-tachometer-alt"></i>
+          Dashboard
+        </a>
+        <a href="/logoutSure" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </a>
       </div>
     </nav>
 
-    <div class="container">
-      <h1>Available Product Files</h1>
-      <table class="file-table">
-        <thead>
-          <tr>
-            <th>Product Type</th>
-            <th>Image</th>
-            <th>PDF</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% files.forEach(file => { %>
-          <tr>
-            <td><%= file.productType %></td>
-            <td>
-              <% if (file.hasImage) { %>
-              <img
-                src="/product_jpeg/<%= file.productType %>.jpeg"
-                alt="<%= file.productType %>"
-                class="file-img"
-              />
-              <% } else { %>
-              <span class="missing">No Image</span>
-              <% } %>
-            </td>
-            <td>
-              <% if (file.hasPDF) { %>
-              <a
-                href="/product_pdf/<%= file.productType %>.pdf"
-                download="<%= file.productType %>.pdf"
-                class="pdf-link"
-              >
-                Download
-              </a>
-              <% } else { %>
-              <span class="missing">No PDF</span>
-              <% } %>
-            </td>
-          </tr>
-          <% }); %>
-        </tbody>
-      </table>
+    <!-- Search Section -->
+    <div class="search-section">
+      <form method="GET" action="/display" class="search-form">
+        <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input
+            type="text"
+            name="pdisplay"
+            placeholder="Search by Product Type..."
+            value="<%= pDisplay || '' %>"
+            class="search-input"
+          />
+          <button type="submit" class="search-btn">
+            <i class="fas fa-search"></i>
+            Search
+          </button>
+        </div>
+      </form>
     </div>
+
+    <div class="container">
+      <!-- Header -->
+      <div class="header-section">
+        <h2>
+          <i class="fas fa-archive"></i>
+          Product Files
+        </h2>
+        <div class="stats-info">
+          <div class="stat-item">
+            <i class="fas fa-file-alt"></i>
+            <span class="stat-number"><%= files.length %></span>
+            <span class="stat-label">Total Files</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Product Type</th>
+              <th>Image</th>
+              <th>PDF</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (files.length === 0) { %>
+            <tr>
+              <td colspan="3" class="empty-row">
+                <div class="empty-state">
+                  <i class="fas fa-folder-open"></i>
+                  <h3>No Files Found</h3>
+                  <p>Try a different search term</p>
+                </div>
+              </td>
+            </tr>
+            <% } else { %> <% files.forEach((file, index) => { %>
+            <tr>
+              <td><%= file.productType %></td>
+              <td>
+                <% if (file.hasImage) { %>
+                <img
+                  src="/product_jpeg/<%= file.productType %>.jpeg"
+                  alt="<%= file.productType %>"
+                  class="file-img"
+                  onclick="openLightbox(this.src, '<%= file.productType %>')"
+                />
+                <% } else { %>
+                <span class="missing">—</span>
+                <% } %>
+              </td>
+              <td>
+                <% if (file.hasPDF) { %>
+                <a
+                  href="/product_pdf/<%= file.productType %>.pdf"
+                  download="<%= file.productType %>.pdf"
+                  class="pdf-link"
+                >
+                  <i class="fas fa-file-pdf"></i>
+                  Download
+                </a>
+                <% } else { %>
+                <span class="missing">—</span>
+                <% } %>
+              </td>
+            </tr>
+            <% }); %> <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Lightbox -->
+      <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <img id="lightbox-img" src="" alt="" />
+      </div>
+
+      <!-- Footer Info -->
+      <div class="footer-info">
+        <p>
+          <i class="fas fa-info-circle"></i>
+          Showing <%= files.length %> items <% if (pDisplay) { %> matching "<%=
+          pDisplay %>" <% } %>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Lightbox functionality
+      function openLightbox(src, alt) {
+        const lightbox = document.getElementById("lightbox");
+        const lightboxImg = document.getElementById("lightbox-img");
+        lightboxImg.src = src;
+        lightboxImg.alt = alt;
+        lightbox.style.display = "flex";
+        document.body.style.overflow = "hidden"; // Prevent scrolling
+      }
+
+      function closeLightbox() {
+        document.getElementById("lightbox").style.display = "none";
+        document.body.style.overflow = "auto"; // Re-enable scrolling
+      }
+
+      // Close lightbox when clicking outside image
+      document
+        .getElementById("lightbox")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            closeLightbox();
+          }
+        });
+
+      // Close with ESC key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeLightbox();
+        }
+      });
+    </script>
   </body>
 </html>

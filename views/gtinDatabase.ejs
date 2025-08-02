@@ -3,54 +3,165 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Database Panel</title>
-
-    <link rel="stylesheet" href="/css/styleViewDB.css" />
     <title>GTIN Database | CropShree</title>
+    <link rel="stylesheet" href="/css/styleViewDB.css" />
+    <!-- Add Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
   </head>
   <body>
+    <!-- Enhanced Navigation -->
     <nav class="navbar">
-      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-brand">
+        <i class="fas fa-barcode"></i>
+        GTIN Database
+      </div>
       <div class="navbar-buttons">
-        <!-- <a href="/customerdatabase">Customer Database</a> -->
-        <a href="/dashboard">Dashboard</a>
-
-        <a href="/logoutSure">Logout</a>
+        <a href="/dashboard">
+          <i class="fas fa-tachometer-alt"></i>
+          Dashboard
+        </a>
+        <a href="/logoutSure" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </a>
       </div>
     </nav>
 
-    <div class="container">
-      <h2>Registered Products</h2>
+    <!-- Enhanced Search Section -->
+    <div class="search-section">
+      <form method="GET" action="/gtinDatabase" class="search-form">
+        <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input
+            type="text"
+            name="gtin"
+            placeholder="Search by GTIN..."
+            value="<%= gtin || '' %>"
+            class="search-input"
+          />
+          <button type="submit" class="search-btn">
+            <i class="fas fa-search"></i>
+            Search
+          </button>
+        </div>
+      </form>
+    </div>
 
-      <div class="action-bar">
-        <a href="/gtinRegister" class="registerBatch">Register GTIN</a>
-        <a href="/delete_gtin" class="deleteBatch">Delete GTIN</a>
+    <div class="container">
+      <!-- Enhanced Header -->
+      <div class="header-section">
+        <h2>
+          <i class="fas fa-boxes"></i>
+          Registered GTINs and Products
+        </h2>
+        <div class="stats-info">
+          <div class="stat-item">
+            <i class="fas fa-barcode"></i>
+            <span class="stat-number"><%= gtinReg.length %></span>
+            <span class="stat-label">Total GTINs</span>
+          </div>
+        </div>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>GTIN</th>
-            <th>Product Name</th>
-            <th>Product Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% if (gtinReg.length === 0) { %>
-          <tr>
-            <td colspan="7" class="empty-row">No GTIN found</td>
-          </tr>
-          <% } else { %> <% gtinReg.forEach((gtin) => { %>
-          <tr>
-            <td><%= gtin.id %></td>
-            <td><%= gtin.gtin %></td>
-            <td><%= gtin.product_name %></td>
-            <td><%= gtin.product_type %></td>
-          </tr>
-          <% }); %> <% } %>
-        </tbody>
-      </table>
+      <!-- Enhanced Action Bar -->
+      <div class="action-bar">
+        <a href="/gtinRegister" class="action-btn registerBatch">
+          <i class="fas fa-plus-circle"></i>
+          Register GTIN
+        </a>
+        <a href="/delete_gtin" class="action-btn deleteBatch">
+          <i class="fas fa-trash-alt"></i>
+          Delete GTIN
+        </a>
+      </div>
+
+      <!-- Enhanced Table Container -->
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>
+                <i class="fas fa-hashtag"></i>
+                ID
+              </th>
+              <th>
+                <i class="fas fa-barcode"></i>
+                GTIN
+              </th>
+              <th>
+                <i class="fas fa-box"></i>
+                Product Name
+              </th>
+              <th>
+                <i class="fas fa-tag"></i>
+                Product Type
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (gtinReg.length === 0) { %>
+            <tr>
+              <td colspan="4" class="empty-row">
+                <div class="empty-state">
+                  <i class="fas fa-inbox"></i>
+                  <h3>No GTINs found</h3>
+                  <p>Try adjusting your search or register a new GTIN</p>
+                </div>
+              </td>
+            </tr>
+            <% } else { %> <% gtinReg.forEach((gtin, index) => { %>
+            <tr class="table-row" data-index="<%= index %>">
+              <td data-label="ID">
+                <span class="id-badge">#<%= gtin.id %></span>
+              </td>
+              <td data-label="GTIN">
+                <span class="gtin-code"><%= gtin.gtin %></span>
+              </td>
+              <td data-label="Product Name">
+                <div class="product-info">
+                  <i class="fas fa-box product-icon"></i>
+                  <span><%= gtin.product_name %></span>
+                </div>
+              </td>
+              <td data-label="Product Type">
+                <span class="batch-number"><%= gtin.product_type %></span>
+              </td>
+            </tr>
+            <% }); %> <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="footer-info">
+        <p>
+          <i class="fas fa-info-circle"></i>
+          Showing <%= gtinReg.length %> GTIN(s) <% if (gtin) { %> matching your
+          search criteria <% } %>
+        </p>
+      </div>
     </div>
+
+    <!-- Loading Animation -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll(".table-row");
+        rows.forEach((row, index) => {
+          row.style.animationDelay = `${index * 0.1}s`;
+        });
+      });
+
+      const searchInput = document.querySelector(".search-input");
+      if (searchInput) {
+        searchInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            this.closest("form").submit();
+          }
+        });
+      }
+    </script>
   </body>
 </html>

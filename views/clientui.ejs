@@ -2,24 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title><%= product.product_name %> - Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= product.product_name %> - Product Details</title>
     <link rel="stylesheet" href="/css/clientui.css" />
   </head>
   <body>
-    <div class="product-card">
-      <h2>Product Information</h2>
-      <div class="table-wrapper">
-        <table>
+    <div class="container">
+      <div class="product-card">
+        <div class="product-header">
+          <h2>Product Information</h2>
+          <img
+            src="product_jpeg/<%= product.product_type %>.jpeg"
+            alt="<%= product.product_name %>"
+            class="product-image"
+          />
+        </div>
+
+        <table class="product-info">
           <tbody>
-            <tr>
-              <img
-                src="product_jpeg/<%= product.product_type %>.jpeg"
-                alt="product image"
-                width="200"
-                height="200"
-                class="product-image"
-              />
-            </tr>
             <tr>
               <th>Product Name</th>
               <td><%= product.product_name %></td>
@@ -56,13 +56,18 @@
                   class="leaflet-link"
                   download
                 >
-                  Download Leaflet
+                  Download Product Leaflet
                 </a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+    </div>
+
+    <div class="agro-footer">
+      <p>© 2025 Cropshree Lifesciences Pvt. Ltd. All rights reserved.</p>
+      <p>Made with ❤️ by BiTek Lab | Arghadip</p>
     </div>
   </body>
 </html>

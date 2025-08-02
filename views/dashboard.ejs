@@ -2,49 +2,96 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard | CropShree</title>
     <link rel="stylesheet" href="/css/dashboard.css" />
+    <!-- Add Font Awesome for professional icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
   <body>
     <!-- Navbar -->
     <nav class="navbar">
-      <a href="/logoutSure" class="logout-link">Logout</a>
+      <div class="navbar-brand">
+        <i class="fas fa-seedling"></i> Cropshree Lifesciences Pvt. Ltd.
+        <!-- <img src="images/logo.png" alt="" width="100px" /> -->
+      </div>
+      <a href="/logoutSure" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
     </nav>
 
     <div class="dashboard-container">
-      <!-- Sidebar: Minor Sections -->
+      <!-- Sidebar: Quick Actions -->
       <aside class="sidebar">
-        <h2>Quick Actions</h2>
-        <a href="/adminpanel" class="sidebar-btn">Add Batch</a>
-        <a href="/delete_batch_toDashboard" class="sidebar-btn">Delete Batch</a>
-        <a href="/gtinRegister" class="sidebar-btn">GTIN Registration</a>
-        <a href="/delete_gtin" class="sidebar-btn">GTIN Deletion</a>
-        <a href="/display" class="sidebar-btn">View all Product Files</a>
-        <a href="/displayUpdate" class="sidebar-btn">Update Product Display</a>
+        <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+        <a href="/adminpanel" class="sidebar-btn">
+          <i class="fas fa-plus-circle"></i> Add Batch
+        </a>
+        <a href="/delete_batch_toDashboard" class="sidebar-btn">
+          <i class="fas fa-trash-alt"></i> Delete Batch
+        </a>
+        <a href="/gtinRegister" class="sidebar-btn">
+          <i class="fas fa-barcode"></i> GTIN Registration
+        </a>
+        <a href="/delete_gtin" class="sidebar-btn">
+          <i class="fas fa-times-circle"></i> GTIN Deletion
+        </a>
+        <a href="/display" class="sidebar-btn">
+          <i class="fas fa-file-alt"></i> View Product Files
+        </a>
+        <a href="/displayUpdate" class="sidebar-btn">
+          <i class="fas fa-sync-alt"></i> Update Display
+        </a>
       </aside>
 
       <!-- Main Panel: Major Sections -->
       <main class="main-content">
-        <h1>Welcome Admin</h1>
+        <h1><i class="fas fa-user-shield"></i> Welcome Admin</h1>
+
         <div class="card-grid">
-          <a href="/view_database" class="card">Product Dashboard</a>
-          <a href="/customerdatabase" class="card">Customer Database</a>
-          <a href="/gtinDatabase" class="card">GTIN Dashboard</a>
-          <a href="/qrdatabase" class="card">QR Dashboard</a>
+          <a href="/view_database" class="card">
+            <i class="fas fa-boxes"></i>
+            Batch Database
+          </a>
+          <a href="/customerdatabase" class="card">
+            <i class="fas fa-users"></i>
+            Customer Database
+          </a>
+          <a href="/gtinDatabase" class="card">
+            <i class="fas fa-barcode"></i>
+            GTIN Database
+          </a>
+          <a href="/qrdatabase" class="card">
+            <i class="fas fa-qrcode"></i>
+            QR Database
+          </a>
         </div>
+
         <div class="infographic-container">
           <div class="infographic-card">
-            <h3>🧾 GTIN Registered</h3>
+            <h3><i class="fas fa-barcode"></i> GTIN Registered</h3>
             <p><%= totalGTIN %></p>
+            <div class="metric-trend">
+              <!-- <i class="fas fa-arrow-up trend-up"></i> 12% this month -->
+            </div>
           </div>
 
           <div class="infographic-card">
-            <h3>📦 Product Batches</h3>
+            <h3><i class="fas fa-tags search-icon"></i> Product Batches</h3>
             <p><%= totalProduct %></p>
+            <div class="metric-trend">
+              <!-- <i class="fas fa-arrow-up trend-up"></i> 5% this month -->
+            </div>
           </div>
+
           <div class="infographic-card">
-            <h3>👥 Customers Scanned</h3>
+            <h3><i class="fas fa-user-check"></i> Customers Scanned</h3>
             <p><%= numberOfCustomers %></p>
+            <div class="metric-trend">
+              <!-- <i class="fas fa-arrow-down trend-down"></i> 2% this month -->
+            </div>
           </div>
         </div>
       </main>

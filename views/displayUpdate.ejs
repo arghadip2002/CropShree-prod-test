@@ -3,22 +3,39 @@
   <head>
     <%- include('partials/headeradmin') %>
     <!-- <link rel="stylesheet" href="/css/admin.css" /> -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
   <body>
-    <!-- Navbar -->
+    <!-- Enhanced Navigation -->
     <nav class="navbar">
-      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-brand">
+        <i class="fas fa-sync-alt"></i>
+        Update Product Files
+      </div>
       <div class="navbar-buttons">
-        <a href="/gtinDatabase">GTIN Database</a>
-        <!-- <a href="/customerdatabase">Customer Database</a> -->
-        <a href="/dashboard">Dashboard</a>
-        <a href="/logoutSure">Logout</a>
+        <a href="/dashboard">
+          <i class="fas fa-tachometer-alt"></i>
+          Dashboard
+        </a>
+
+        <a href="/display">
+          <i class="fas fa-database"></i>
+          All Files
+        </a>
+
+        <a href="/logoutSure" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </a>
       </div>
     </nav>
 
     <!-- Product Registration Form -->
     <div class="form-container">
-      <h2>Product Display</h2>
+      <h2>Update Files</h2>
       <form
         action="/update_display"
         method="POST"

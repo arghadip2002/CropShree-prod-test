@@ -2,23 +2,101 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Verify Product</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Verification | CropShree</title>
     <link rel="stylesheet" href="/css/clientForm.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
   </head>
   <body>
-    <div class="form-container">
-      <h2>Verify to View Product</h2>
-      <form action="/submitCustomer" method="POST">
-        <input name="name" type="text" placeholder="Your Name" required />
-        <input name="phone" type="tel" placeholder="Phone Number" required />
-        <input type="hidden" name="location" id="location" />
-        <input type="hidden" name="batch" value="<%= batch %>" />
-        <button type="submit">Continue</button>
-      </form>
+    <div class="agro-container">
+      <div class="agro-header">
+        <img src="/images/logo.png" alt="AgroSafe Logo" class="logo" />
+        <h1>Product Authentication</h1>
+        <p>Verify your agrochemical product to ensure quality and safety</p>
+      </div>
+
+      <div class="agro-verification-card">
+        <div class="agro-hero">
+          <div class="hero-content">
+            <h2>
+              <i class="fas fa-seedling"></i> Genuine Product Verification
+            </h2>
+            <p>
+              Protect your crops with authentic agrochemicals. Verify your
+              product to access:
+            </p>
+            <ul>
+              <li>
+                <i class="fas fa-check-circle"></i> Product specifications
+              </li>
+              <li><i class="fas fa-check-circle"></i> Usage guidelines</li>
+              <li><i class="fas fa-check-circle"></i> Safety information</li>
+              <li><i class="fas fa-check-circle"></i> Manufacturer details</li>
+            </ul>
+          </div>
+          <div class="agro-pattern">
+            <div class="leaf-pattern"></div>
+          </div>
+        </div>
+
+        <div class="agro-form-section">
+          <form action="/submitCustomer" method="POST" class="agro-verify-form">
+            <div class="form-group">
+              <label for="name"><i class="fas fa-user"></i> Your Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="phone"
+                ><i class="fas fa-phone"></i> Phone Number</label
+              >
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="Enter your phone number"
+                required
+              />
+            </div>
+
+            <input type="hidden" name="location" id="location" />
+            <input type="hidden" name="batch" value="<%= batch %>" />
+
+            <button type="submit" class="agro-submit-btn">
+              <i class="fas fa-search"></i> Verify Product
+            </button>
+          </form>
+
+          <div class="agro-features">
+            <div class="feature-item">
+              <i class="fas fa-shield-alt"></i>
+              <span>Authenticity Guarantee</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-leaf"></i>
+              <span>Crop Protection</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="agro-footer">
+        <p>© 2025 Cropshree Lifesciences Pvt. Ltd. All rights reserved.</p>
+        <p>Made with ❤️ by BiTek Lab | Arghadip</p>
+      </div>
     </div>
 
     <script>

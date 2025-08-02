@@ -2,17 +2,34 @@
 <html lang="en">
   <head>
     <%- include('partials/headeradmin') %>
-    <!-- <link rel="stylesheet" href="/css/admin.css" /> -->
+    <!-- Add Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
   <body>
-    <!-- Navbar -->
+    <!-- Enhanced Navigation -->
     <nav class="navbar">
-      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-brand">
+        <i class="fas fa-barcode"></i>
+        GTIN
+      </div>
       <div class="navbar-buttons">
-        <a href="/gtinDatabase">GTIN Database</a>
-        <!-- <a href="/customerdatabase">Customer Database</a> -->
-        <a href="/dashboard">Dashboard</a>
-        <a href="/logoutSure">Logout</a>
+        <a href="/dashboard">
+          <i class="fas fa-tachometer-alt"></i>
+          Dashboard
+        </a>
+
+        <a href="/gtindatabase">
+          <i class="fas fa-database"></i>
+          GTIN Database
+        </a>
+
+        <a href="/logoutSure" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </a>
       </div>
     </nav>
 
@@ -20,36 +37,21 @@
     <div class="form-container">
       <h2>GTIN Registration</h2>
       <form action="/submit_gtin" method="POST">
-        <div class="form-group">
-          <label for="gtin">GTIN*</label>
-          <input type="text" id="gtin" name="gtin" required />
-        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="gtin">GTIN*</label>
+            <input type="text" id="gtin" name="gtin" required />
+          </div>
 
+          <div class="form-group">
+            <label for="product_type">Product Type*</label>
+            <input type="text" id="product_type" name="product_type" required />
+          </div>
+        </div>
         <div class="form-group">
           <label for="batchNumber">Product Name*</label>
           <input type="text" id="product_name" name="product_name" required />
         </div>
-
-        <div class="form-group">
-          <label for="product_type">Product Type*</label>
-          <input type="text" id="product_type" name="product_type" required />
-        </div>
-
-        <!-- <div class="form-group">
-          <label for="leaflet">Leaflet (PDF)</label>
-          <input
-            type="file"
-            id="leaflet"
-            name="leaflet"
-            accept=".pdf"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="image">Image (jpeg)</label>
-          <input type="file" id="image" name="image" accept=".jpeg" required />
-        </div> -->
 
         <button type="submit" class="submit-btn">Submit</button>
       </form>

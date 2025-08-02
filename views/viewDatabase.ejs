@@ -3,66 +3,203 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Database Panel</title>
-
-    <link rel="stylesheet" href="/css/styleViewDB.css" />
     <title>Product Database | CropShree</title>
+    <link rel="stylesheet" href="/css/styleViewDB.css" />
+    <!-- Add Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
   </head>
   <body>
+    <!-- Enhanced Navigation -->
     <nav class="navbar">
-      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-brand">
+        <i class="fas fa-boxes"></i>
+        Batch Database
+      </div>
       <div class="navbar-buttons">
-        <!-- <a href="/customerdatabase">Customer Database</a> -->
-        <a href="/dashboard">Dashboard</a>
-
-        <a href="/logoutSure">Logout</a>
+        <a href="/dashboard">
+          <i class="fas fa-tachometer-alt"></i>
+          Dashboard
+        </a>
+        <a href="/logoutSure" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </a>
       </div>
     </nav>
 
-    <div class="container">
-      <h2>Registered Products</h2>
+    <!-- Enhanced Search Section -->
+    <div class="search-section">
+      <form method="GET" action="/view_database" class="search-form">
+        <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input
+            type="text"
+            name="batch"
+            placeholder="Search by Batch No..."
+            value="<%= queryBatch || '' %>"
+            class="search-input"
+          />
+          <button type="submit" class="search-btn">
+            <i class="fas fa-search"></i>
+            Search
+          </button>
+        </div>
+      </form>
+    </div>
 
-      <div class="action-bar">
-        <a href="/adminpanel" class="registerBatch">Register Batch</a>
-        <a href="/delete_batch" class="deleteBatch">Delete Batch</a>
+    <div class="container">
+      <!-- Enhanced Header -->
+      <div class="header-section">
+        <h2>
+          <i class="fas fa-database"></i>
+          Registered Batches
+        </h2>
+        <div class="stats-info">
+          <div class="stat-item">
+            <i class="fas fa-box"></i>
+            <span class="stat-number"><%= products.length %></span>
+            <span class="stat-label">Total Products</span>
+          </div>
+        </div>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Product Name</th>
-            <th>GTIN</th>
-            <th>Batch Number</th>
-            <th>Manufacturing Date</th>
-            <th>Expiry Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% if (products.length === 0) { %>
-          <tr>
-            <td colspan="7" class="empty-row">No products found</td>
-          </tr>
-          <% } else { %> <% products.forEach((product) => { %>
-          <tr>
-            <td><%= product.id %></td>
-            <td><%= product.product_name %></td>
-            <td><%= product.gtin %></td>
-            <td><%= product.batch %></td>
-            <td><%= product.mfg_date.toISOString().slice(0, 10) %></td>
-            <td><%= product.exp_date.toISOString().slice(0, 10) %></td>
-            <td>
-              <button
-                class="view"
-                onclick="location.href='/adminclientui?batch=<%= product.batch %>'"
-              >
-                View
-              </button>
-            </td>
-          </tr>
-          <% }); %> <% } %>
-        </tbody>
-      </table>
+      <!-- Enhanced Action Bar -->
+      <div class="action-bar">
+        <a href="/adminpanel" class="action-btn registerBatch">
+          <i class="fas fa-plus-circle"></i>
+          Register New Batch
+        </a>
+        <a href="/delete_batch" class="action-btn deleteBatch">
+          <i class="fas fa-trash-alt"></i>
+          Delete Batch
+        </a>
+      </div>
+
+      <!-- Enhanced Table Container -->
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>
+                <i class="fas fa-hashtag"></i>
+                ID
+              </th>
+              <th>
+                <i class="fas fa-seedling"></i>
+                Product Name
+              </th>
+              <th>
+                <i class="fas fa-barcode"></i>
+                GTIN
+              </th>
+              <th>
+                <i class="fas fa-tags"></i>
+                Batch Number
+              </th>
+              <th>
+                <i class="fas fa-calendar-plus"></i>
+                Manufacturing Date
+              </th>
+              <th>
+                <i class="fas fa-calendar-times"></i>
+                Expiry Date
+              </th>
+              <th>
+                <i class="fas fa-cogs"></i>
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (products.length === 0) { %>
+            <tr>
+              <td colspan="7" class="empty-row">
+                <div class="empty-state">
+                  <i class="fas fa-inbox"></i>
+                  <h3>No products found</h3>
+                  <p>
+                    Try adjusting your search criteria or register a new batch
+                  </p>
+                </div>
+              </td>
+            </tr>
+            <% } else { %> <% products.forEach((product, index) => { %>
+            <tr class="table-row" data-index="<%= index %>">
+              <td data-label="ID">
+                <span class="id-badge">#<%= product.id %></span>
+              </td>
+              <td data-label="Product Name">
+                <div class="product-info">
+                  <i class="fas fa-leaf product-icon"></i>
+                  <span><%= product.product_name %></span>
+                </div>
+              </td>
+              <td data-label="GTIN">
+                <span class="gtin-code"><%= product.gtin %></span>
+              </td>
+              <td data-label="Batch Number">
+                <span class="batch-number"><%= product.batch %></span>
+              </td>
+              <td data-label="Manufacturing Date">
+                <div class="date-info">
+                  <i class="fas fa-calendar-alt"></i>
+                  <span><%= product.mfg_date %></span>
+                </div>
+              </td>
+              <td data-label="Expiry Date">
+                <div class="date-info">
+                  <i class="fas fa-calendar-alt"></i>
+                  <span><%= product.exp_date %></span>
+                </div>
+              </td>
+              <td data-label="Actions">
+                <button
+                  class="view-btn"
+                  onclick="location.href='/adminclientui?batch=<%= product.batch %>'"
+                  title="View Details"
+                >
+                  <i class="fas fa-eye"></i>
+                  View Details
+                </button>
+              </td>
+            </tr>
+            <% }); %> <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="footer-info">
+        <p>
+          <i class="fas fa-info-circle"></i>
+          Showing <%= products.length %> product(s) <% if (queryBatch) { %> for
+          batch: "<%= queryBatch %>" <% } %>
+        </p>
+      </div>
     </div>
+
+    <!-- Loading Animation (Optional) -->
+    <script>
+      // Add subtle loading animation for better UX
+      document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll(".table-row");
+        rows.forEach((row, index) => {
+          row.style.animationDelay = `${index * 0.1}s`;
+        });
+      });
+
+      // Enhanced search functionality
+      const searchInput = document.querySelector(".search-input");
+      if (searchInput) {
+        searchInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            this.closest("form").submit();
+          }
+        });
+      }
+    </script>
   </body>
 </html>

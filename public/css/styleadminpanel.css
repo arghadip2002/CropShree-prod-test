@@ -14,17 +14,6 @@ body {
   padding-top: 20px;
 }
 
-/* body {
-  margin: 0;
-  padding: 0;
-  font-family: "Poppins", sans-serif;
-  background: linear-gradient(to right, #e6ffe6, #f3fff3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-} */
-
 .form-container {
   background-color: #ffffff;
   width: 600px;
@@ -96,34 +85,90 @@ input[readonly] {
   background-color: #1f6e24;
 }
 
-/* Navbar Styles */
+/* Navigation Bar */
 .navbar {
+  background: linear-gradient(135deg, #000899, #0066cc);
+  border-bottom: 3px solid #1ee019;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #2d3e50;
-  padding: 10px 20px;
-  color: white;
+  box-shadow: 0 8px 32px rgba(0, 8, 153, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .navbar-brand {
-  font-size: 20px;
+  font-size: 1.8rem;
   font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 0 20px rgba(30, 224, 25, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar-brand i {
+  color: #1ee019;
+}
+
+.navbar-buttons {
+  display: flex;
+  gap: 1rem;
 }
 
 .navbar-buttons a {
-  color: white;
+  color: #ffffff;
   text-decoration: none;
-  margin-left: 15px;
-  font-weight: bold;
-  padding: 8px 12px;
-  border-radius: 4px;
-  background-color: #4a5a6a;
-  transition: background-color 0.3s ease;
+  padding: 0.7rem 1.5rem;
+  border: 2px solid #1ee019;
+  border-radius: 25px;
+  background: rgba(30, 224, 25, 0.1);
+  transition: all 0.3s ease;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logout-btn {
+  border-color: #ff4757 !important;
+  background: rgba(255, 71, 87, 0.1) !important;
+}
+
+.logout-btn:hover {
+  background: #ff4757 !important;
+  color: #ffffff !important;
+}
+
+.navbar-buttons a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(30, 224, 25, 0.4),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.navbar-buttons a:hover::before {
+  left: 100%;
 }
 
 .navbar-buttons a:hover {
-  background-color: #5d6f81;
+  background: #1ee019;
+  color: #000899;
+  box-shadow: 0 0 20px rgba(30, 224, 25, 0.6);
+  transform: translateY(-2px);
 }
 
 /* Form Styles */
@@ -172,4 +217,129 @@ input[readonly] {
 
 .submit-btn:hover {
   background-color: #3f5471;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Admin Form - Bold Modern Style */
+.form-container {
+  max-width: 900px;
+  margin: 1.5rem auto;
+  padding: 1rem 2.5rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 8, 153, 0.15);
+  border: 3px solid #000899;
+  min-width: 800px;
+}
+
+.form-container h2 {
+  font-size: 2.2rem;
+  color: #000899;
+  margin-bottom: 2rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.form-container h2:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, #000899, #1ee019);
+}
+
+.form-row {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #000899;
+  font-size: 1.1rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 15px 20px;
+  border: 2px solid #000899;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  background: rgba(0, 8, 153, 0.03);
+}
+
+.form-group input:focus {
+  border-color: #1ee019;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(30, 224, 25, 0.2);
+  background: white;
+}
+
+.form-group input[readonly] {
+  background: rgba(0, 8, 153, 0.05);
+  color: #333;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #000899, #1a1a8a);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #1a1a8a, #000899);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 8, 153, 0.3);
+}
+
+/* Flatpickr customization */
+.flatpickr-input {
+  font-size: 1.1rem !important;
+  padding: 15px 20px !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 2rem 1.5rem;
+    margin: 1.5rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-group input {
+    padding: 14px 18px;
+  }
 }

@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title><%= product.product_name %> - Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= product.product_name %> - Product Details</title>
     <link rel="stylesheet" href="/css/clientui.css" />
   </head>
   <body>
@@ -10,88 +11,87 @@
       <a href="/qrdatabase" class="back-button">← Back to Database</a>
 
       <div class="product-card">
-        <h2>Product Information</h2>
-        <div class="table-wrapper">
-          <table>
-            <tbody>
-              <tr>
-                <img
-                  src="product_jpeg/<%= product.product_type %>.jpeg"
-                  alt="product image"
-                  width="200"
-                  height="200"
-                  class="product-image"
-                />
-              </tr>
-              <tr>
-                <th>Product Name</th>
-                <td><%= product.product_name %></td>
-              </tr>
-              <tr>
-                <th>Batch Code</th>
-                <td><%= product.batch %></td>
-              </tr>
-              <tr>
-                <th>GTIN</th>
-                <td><%= product.gtin %></td>
-              </tr>
-              <tr>
-                <tr>
-                <th>Brand Name</th>
-                <td>Cropshree Lifesciences</td>
-              </tr>
-              <tr>
-                <th>Marketed by</th>
-                <td>Cropshree Lifesciences</td>
-              </tr>
-                <th>Manufactured</th>
-                <td><%= product.mfg_date.toISOString().slice(0, 10) %></td>
-              </tr>
-              <tr>
-                <th>Expires</th>
-                <td><%= product.exp_date.toISOString().slice(0, 10) %></td>
-              </tr>
-              <tr>
-                <th>Leaflet</th>
-                <td>
-                  <a
-                    href="/product_pdf/<%= product.product_type %>.pdf"
-                    class="leaflet-link"
-                    download
-                  >
-                    Download Leaflet
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="product-header">
+          <h2>Product Information</h2>
+          <img
+            src="product_jpeg/<%= product.product_type %>.jpeg"
+            alt="<%= product.product_name %>"
+            class="product-image"
+          />
         </div>
+
+        <table class="product-info">
+          <tbody>
+            <tr>
+              <th>Product Name</th>
+              <td><%= product.product_name %></td>
+            </tr>
+            <tr>
+              <th>Batch Code</th>
+              <td><%= product.batch %></td>
+            </tr>
+            <tr>
+              <th>GTIN</th>
+              <td><%= product.gtin %></td>
+            </tr>
+            <tr>
+              <th>Brand Name</th>
+              <td>Cropshree Lifesciences</td>
+            </tr>
+            <tr>
+              <th>Marketed by</th>
+              <td>Cropshree Lifesciences</td>
+            </tr>
+            <tr>
+              <th>Manufactured</th>
+              <td><%= product.mfg_date.toISOString().slice(0, 10) %></td>
+            </tr>
+            <tr>
+              <th>Expires</th>
+              <td><%= product.exp_date.toISOString().slice(0, 10) %></td>
+            </tr>
+            <tr>
+              <th>Leaflet</th>
+              <td>
+                <a
+                  href="/product_pdf/<%= product.product_type %>.pdf"
+                  class="leaflet-link"
+                  download
+                >
+                  Download Product Leaflet
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+
       <div class="qr-section">
         <div class="qr-container">
           <img
             src="/qrImages/<%= product.batch %>_qr.png"
-            alt="QR not in Server"
+            alt="QR Code for <%= product.product_name %>"
             class="qr-image"
           />
         </div>
         <div class="action-buttons">
-          <a href="/deleteQR_qr?batch=<%= product.batch %>" class="delete-button">
+          <a
+            href="/deleteQR_qr?batch=<%= product.batch %>"
+            class="btn btn-danger"
+          >
             Delete QR
           </a>
-
           <a
             href="/generateQR_qr?batch=<%= product.batch %>"
-            class="generate-button"
+            class="btn btn-info"
           >
             Generate QR
           </a>
-
           <a
             href="/downloadQR?batch=<%= product.batch %>"
-            class="download-button"
+            class="btn btn-primary"
           >
-            Downlaod QR
+            Download QR
           </a>
         </div>
       </div>

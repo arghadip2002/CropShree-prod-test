@@ -3,55 +3,218 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Database Panel</title>
-
-    <link rel="stylesheet" href="/css/styleViewDB.css" />
     <title>Customer Database | CropShree</title>
+    <link rel="stylesheet" href="/css/styleViewDB.css" />
+    <!-- Add Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
   </head>
   <body>
+    <!-- Enhanced Navigation -->
     <nav class="navbar">
-      <div class="navbar-brand">CropShree Admin</div>
+      <div class="navbar-brand">
+        <i class="fas fa-users"></i>
+        Customer Database
+      </div>
       <div class="navbar-buttons">
-        <!-- <a href="/view_database">Product Database</a> -->
-        <a href="/dashboard">Dashboard</a>
-        <a href="/logoutSure">Logout</a>
+        <a href="/dashboard">
+          <i class="fas fa-tachometer-alt"></i>
+          Dashboard
+        </a>
+        <a href="/logoutSure" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </a>
       </div>
     </nav>
 
-    <div class="container">
-      <h2>Registered Customers Scanned the QR</h2>
+    <!-- Enhanced Search Section -->
+    <div class="search-section">
+      <form
+        method="GET"
+        action="/customerdatabase"
+        class="search-form"
+        style="max-width: 900px"
+      >
+        <div
+          class="search-container"
+          style="display: flex; align-items: center; gap: 1.5rem; width: 100%"
+        >
+          <!-- Batch Search Field -->
+          <div style="position: relative; flex: 1; min-width: 200px">
+            <i
+              class="fas fa-tags search-icon"
+              style="
+                position: absolute;
+                top: 50%;
+                left: 1rem;
+                transform: translateY(-50%);
+                color: #000899;
+                z-index: 2;
+              "
+            ></i>
+            <input
+              type="text"
+              name="batch"
+              placeholder="Search by Batch No..."
+              value="<%= queryBatch || '' %>"
+              class="search-input"
+              style="padding: 0.8rem 1rem 0.8rem 3rem; width: 100%"
+            />
+          </div>
 
-      <!-- <div class="action-bar">
-        <a href="/adminpanel" class="registerBatch">Register Batch</a>
-        <a href="/delete_batch" class="deleteBatch">Delete Batch</a>
-      </div> -->
+          <!-- Location Search Field -->
+          <div style="position: relative; flex: 1; min-width: 200px">
+            <i
+              class="fas fa-map-marker-alt search-icon"
+              style="
+                position: absolute;
+                top: 50%;
+                left: 1rem;
+                transform: translateY(-50%);
+                color: #000899;
+                z-index: 2;
+              "
+            ></i>
+            <input
+              type="text"
+              name="location"
+              placeholder="Search by location..."
+              value="<%= location || '' %>"
+              class="search-input"
+              style="padding: 0.8rem 1rem 0.8rem 3rem; width: 100%"
+            />
+          </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Customer Name</th>
-            <th>Phone No</th>
-            <th>Location</th>
-            <th>Batch</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% if (customers.length === 0) { %>
-          <tr>
-            <td colspan="7" class="empty-row">No customers found</td>
-          </tr>
-          <% } else { %> <% customers.forEach((customer) => { %>
-          <tr>
-            <td><%= customer.customer_id %></td>
-            <td><%= customer.name %></td>
-            <td><%= customer.phone %></td>
-            <td><%= customer.location %></td>
-            <td><%= customer.batch %></td>
-          </tr>
-          <% }); %> <% } %>
-        </tbody>
-      </table>
+          <!-- Search Button -->
+          <button
+            type="submit"
+            class="search-btn"
+            style="padding: 0.8rem 2rem; white-space: nowrap"
+          >
+            <i class="fas fa-search"></i>
+            Search
+          </button>
+        </div>
+      </form>
     </div>
+
+    <div class="container">
+      <!-- Enhanced Header -->
+      <div class="header-section">
+        <h2>
+          <i class="fas fa-user-check"></i>
+          Registered Customers
+        </h2>
+        <div class="stats-info">
+          <div class="stat-item">
+            <i class="fas fa-users"></i>
+            <span class="stat-number"><%= customers.length %></span>
+            <span class="stat-label">Total Customers</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhanced Table Container -->
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>
+                <i class="fas fa-hashtag"></i>
+                ID
+              </th>
+              <th>
+                <i class="fas fa-user"></i>
+                Customer Name
+              </th>
+              <th>
+                <i class="fas fa-phone"></i>
+                Phone No
+              </th>
+              <th>
+                <i class="fas fa-map-marker-alt"></i>
+                Location
+              </th>
+              <th>
+                <i class="fas fa-tags"></i>
+                Batch Number
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (customers.length === 0) { %>
+            <tr>
+              <td colspan="5" class="empty-row">
+                <div class="empty-state">
+                  <i class="fas fa-inbox"></i>
+                  <h3>No customers found</h3>
+                  <p>Try adjusting your search criteria</p>
+                </div>
+              </td>
+            </tr>
+            <% } else { %> <% customers.forEach((customer, index) => { %>
+            <tr class="table-row" data-index="<%= index %>">
+              <td data-label="ID">
+                <span class="id-badge">#<%= customer.customer_id %></span>
+              </td>
+              <td data-label="Customer Name">
+                <div class="product-info">
+                  <i class="fas fa-user-circle product-icon"></i>
+                  <span><%= customer.name %></span>
+                </div>
+              </td>
+              <td data-label="Phone No">
+                <span class="gtin-code"><%= customer.phone %></span>
+              </td>
+              <td data-label="Location">
+                <div class="date-info">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span><%= customer.location %></span>
+                </div>
+              </td>
+              <td data-label="Batch Number">
+                <span class="batch-number"><%= customer.batch %></span>
+              </td>
+            </tr>
+            <% }); %> <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="footer-info">
+        <p>
+          <i class="fas fa-info-circle"></i>
+          Showing <%= customers.length %> customer(s) <% if (queryBatch ||
+          location) { %> matching your search criteria <% } %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Loading Animation (Optional) -->
+    <script>
+      // Add subtle loading animation for better UX
+      document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll(".table-row");
+        rows.forEach((row, index) => {
+          row.style.animationDelay = `${index * 0.1}s`;
+        });
+      });
+
+      // Enhanced search functionality
+      const searchInputs = document.querySelectorAll(".search-input");
+      if (searchInputs) {
+        searchInputs.forEach((input) => {
+          input.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+              this.closest("form").submit();
+            }
+          });
+        });
+      }
+    </script>
   </body>
 </html>

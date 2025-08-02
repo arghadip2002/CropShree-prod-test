@@ -48,6 +48,23 @@ body {
   transform: translateY(-1px);
 }
 
+/* Search Input */
+input[name="pdisplay"] {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 300px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[name="pdisplay"],
+:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+  outline: none;
+}
+
 .container {
   max-width: 1000px;
   margin: 0 auto;

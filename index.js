@@ -42,22 +42,22 @@ app.use(passport.session());
 //   database: process.env.DATABASE,
 // });
 
-// const db = new pg.Client({
-//   user: process.env.PG_USER,
-//   host: process.env.PG_HOST,
-//   port: process.env.PG_PORT,
-//   password: process.env.PG_PASSWORD,
-//   database: process.env.PG_DATABASE,
-// });
-// db.connect();
-
 const db = new pg.Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // Supabase requires SSL for external connections
-  },
+  user: process.env.PG_USER,
+  host: process.env.PG_HOST,
+  port: process.env.PG_PORT,
+  password: process.env.PG_PASSWORD,
+  database: process.env.PG_DATABASE,
 });
 db.connect();
+
+// const db = new pg.Client({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false, // Supabase requires SSL for external connections
+//   },
+// });
+// db.connect();
 
 // Configure storage for multer
 const storage = multer.diskStorage({

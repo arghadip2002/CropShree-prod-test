@@ -78,4 +78,5 @@ input[type="text"]:focus {
   color: #2f8732;
   text-decoration: underline;
   font-weight: 500;
+  cursor: pointer;
 }
